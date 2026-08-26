@@ -1,0 +1,113 @@
+<div class="admin-shell" dir="rtl">
+  <aside class="sidebar">
+    <a class="brand" routerLink="/admin/dashboard">
+      <span class="brand-symbol">ع</span>
+      <div>
+        <b>عائلة عاشور</b>
+        <small>لوحة التحكم الإدارية</small>
+      </div>
+    </a>
+
+    <div class="council-status">
+      <span class="status-dot"></span>
+      <span>النظام نشط ومحمي</span>
+      <b>١٤٤٧ هـ</b>
+    </div>
+
+    <p class="nav-label">الرئيسية والمتابعة</p>
+    <nav class="side-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="selected" [routerLinkActiveOptions]="{ exact: true }">
+        <span class="icon">⌂</span>
+        <span>نظرة عامة ومؤشرات</span>
+      </a>
+      <a routerLink="/admin/finance" routerLinkActive="selected">
+        <span class="icon">💰</span>
+        <span>صندوق ومالية العائلة</span>
+      </a>
+    </nav>
+
+    <p class="nav-label">شجرة ودليل العائلة</p>
+    <nav class="side-nav">
+      <a routerLink="/admin/members" routerLinkActive="selected">
+        <span class="icon">🌳</span>
+        <span>دليل وشجرة أفراد العائلة</span>
+      </a>
+      <a routerLink="/admin/albums" routerLinkActive="selected">
+        <span class="icon">🖼️</span>
+        <span>ألبومات ووسائط العائلة</span>
+      </a>
+    </nav>
+
+    <p class="nav-label">المجلس والأنشطة</p>
+    <nav class="side-nav">
+      <a routerLink="/admin/committees" routerLinkActive="selected">
+        <span class="icon">▦</span>
+        <span>المجلس واللجان</span>
+      </a>
+      <a routerLink="/admin/activities" routerLinkActive="selected">
+        <span class="icon">✦</span>
+        <span>الأنشطة والفعاليات</span>
+      </a>
+      <a routerLink="/admin/upcoming-events" routerLinkActive="selected">
+        <span class="icon">📅</span>
+        <span>المناسبات والأحداث القادمة</span>
+      </a>
+      <a routerLink="/admin/decisions" routerLinkActive="selected">
+        <span class="icon">📜</span>
+        <span>قرارات المجلس</span>
+      </a>
+    </nav>
+
+    <p class="nav-label">إدارة النظام</p>
+    <nav class="side-nav">
+      @if (auth.isAdmin()) {
+        <a routerLink="/admin/users" routerLinkActive="selected">
+          <span class="icon">🛡️</span>
+          <span>المستخدمون والأذونات</span>
+        </a>
+      }
+      <a routerLink="/admin/settings" routerLinkActive="selected">
+        <span class="icon">⚙</span>
+        <span>إعدادات الموقع</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-profile">
+        <div class="mini-avatar">
+          {{ auth.currentUser()?.fullName?.slice(0, 2) || 'أد' }}
+        </div>
+        <div class="user-info">
+          <b>{{ auth.currentUser()?.fullName || 'المشرف' }}</b>
+          <small>{{ auth.currentUser()?.role === 'Admin' ? 'مدير النظام' : 'عضو إدارة' }}</small>
+        </div>
+      </div>
+      <div class="sidebar-actions">
+        <a routerLink="/" class="btn-public" title="زيارة الموقع الخارجي">🌐 الموقع</a>
+        <button (click)="onLogout()" class="btn-logout" title="تسجيل الخروج">🚪 خروج</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="workspace">
+    <header class="topbar">
+      <div class="breadcrumb">
+        <span>مجلس عائلة عاشور</span>
+        <b>/</b>
+        <strong>لوحة الإدارة والمتابعة</strong>
+      </div>
+      <div class="top-actions">
+        <span class="api-status">
+          <i></i>قاعدة البيانات متصلة
+        </span>
+        <a routerLink="/" target="_blank" class="view-site-btn">
+          👁️ عرض الموقع الخارجي
+        </a>
+      </div>
+    </header>
+
+    <main class="content-body">
+      <router-outlet />
+    </main>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+@import '@fontsource/cairo/400.css';
+@import '@fontsource/cairo/500.css';
+@import '@fontsource/cairo/600.css';
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #f8f5ef; }
+button, input, textarea { font: inherit; }
+body { font-family: 'Cairo', sans-serif; font-size: 16px; }

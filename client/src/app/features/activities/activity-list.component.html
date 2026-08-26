@@ -1,0 +1,34 @@
+<section class="activities-container">
+  <div class="view-heading">
+    <div>
+      <p class="subtitle">مجلس العائلة</p>
+      <h1>الأنشطة والفعاليات</h1>
+      <span class="desc-text">متابعة وتوثيق كافة الفعاليات الخاصة باللجان.</span>
+    </div>
+    <button class="btn-add" (click)="onAdd()">＋ إضافة نشاط جديد</button>
+  </div>
+
+  <div class="activities-grid">
+    @for (item of activities; track item.id) {
+      <article class="activity-card">
+        <div class="card-header">
+          <span class="badge" [ngClass]="item.status">{{ item.status }}</span>
+          <div class="actions">
+            <button (click)="onEdit(item)" title="تعديل">✏️</button>
+            <button class="delete" (click)="onDelete(item.id)" title="حذف">🗑️</button>
+          </div>
+        </div>
+
+        <h2>{{ item.title }}</h2>
+        <p class="desc">{{ item.description | slice:0:120 }}</p>
+
+        <div class="card-footer">
+          <span>📅 {{ item.scheduledAt | date:'mediumDate' }}</span>
+          <span>🏛️ {{ item.committeeName || 'لجنة خاصة' }}</span>
+        </div>
+      </article>
+    } @empty {
+      <div class="empty">لا توجد أنشطة أو فعاليات مسجلة حالياً.</div>
+    }
+  </div>
+</section>

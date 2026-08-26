@@ -1,0 +1,225 @@
+<section class="finance-page" dir="rtl">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">صندوق وديوان العائلة</span>
+      <h1>سجل مالية وصندوق عائلة عاشور</h1>
+      <p class="subtitle">متابعة دقيقة وشفافة لإجمالي المقبوضات والمصروفات وتوثيق مجالات وأسباب الصرف.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-income" (click)="openAddModal('Income')">
+        ＋ إضافة سند قبض (إيراد)
+      </button>
+      <button class="btn-expense" (click)="openAddModal('Expense')">
+        － إضافة سند صرف (مصروف)
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <div class="kpi-card income">
+      <div class="kpi-icon">📈</div>
+      <div class="kpi-info">
+        <span class="label">إجمالي الإيرادات (المقبوضات)</span>
+        <b class="amount">{{ (summary()?.totalIncome || 0) | number:'1.2-2' }} <span>شيكل / $</span></b>
+        <small>{{ summary()?.incomeCount || 0 }} سندات قبض مسجلة</small>
+      </div>
+    </div>
+
+    <div class="kpi-card expense">
+      <div class="kpi-icon">📉</div>
+      <div class="kpi-info">
+        <span class="label">إجمالي المصروفات (المدفوعات)</span>
+        <b class="amount">{{ (summary()?.totalExpense || 0) | number:'1.2-2' }} <span>شيكل / $</span></b>
+        <small>{{ summary()?.expenseCount || 0 }} سندات صرف موثقة</small>
+      </div>
+    </div>
+
+    <div class="kpi-card balance" [class.negative]="(summary()?.balance || 0) < 0">
+      <div class="kpi-icon">🏦</div>
+      <div class="kpi-info">
+        <span class="label">صافي الرصيد المتاح بالصندوق</span>
+        <b class="amount">{{ (summary()?.balance || 0) | number:'1.2-2' }} <span>شيكل / $</span></b>
+        <small>الرصيد الفعلي الحالي المتبقي</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category Breakdown Chips -->
+  @if (summary()?.categoryBreakdown; as breakdown) {
+    @if (breakdown.length > 0) {
+      <div class="categories-bar">
+        <span class="bar-title">تصنيفات الصرف والقبض:</span>
+        <div class="chips-container">
+          @for (c of breakdown; track c.category + c.recordType) {
+            <span class="chip" [class.inc]="c.recordType === 'Income'" [class.exp]="c.recordType === 'Expense'">
+              <b>{{ c.category }}:</b>
+              <span>{{ c.total | number:'1.0-0' }} ({{ c.count }})</span>
+            </span>
+          }
+        </div>
+      </div>
+    }
+  }
+
+  <!-- Filters & Ledger Table -->
+  <div class="ledger-box">
+    <div class="filter-bar">
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="onFilterChange()"
+          placeholder="🔍 ابحث في البيان، رقم السند، أو اسم الجهة..."
+        />
+      </div>
+
+      <div class="filter-selects">
+        <select [(ngModel)]="filterType" (change)="onFilterChange()">
+          <option value="all">كل الحركات المالية</option>
+          <option value="Income">إيرادات ومقبوضات فقط</option>
+          <option value="Expense">مصروفات ومدفوعات فقط</option>
+        </select>
+
+        <select [(ngModel)]="filterCategory" (change)="onFilterChange()">
+          <option value="all">كل التصنيفات ومجالات الصرف</option>
+          @for (cat of categories; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+
+        @if (filterType !== 'all' || filterCategory !== 'all' || searchQuery) {
+          <button class="btn-reset" (click)="resetFilters()">إلغاء الفلاتر ↺</button>
+        }
+      </div>
+    </div>
+
+    <!-- Table -->
+    @if (isLoading()) {
+      <div class="loading-state"><p>جاري تحميل السجلات المالية...</p></div>
+    } @else {
+      <div class="table-responsive">
+        <table class="finance-table">
+          <thead>
+            <tr>
+              <th>نوع الحركة</th>
+              <th>التاريخ</th>
+              <th>رقم السند</th>
+              <th>التصنيف والمجال</th>
+              <th>الجهة / المستلم / الدافع</th>
+              <th>البيان وأسباب العملية</th>
+              <th>المبلغ</th>
+              <th>مرفق</th>
+              <th>إجراءات</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of records(); track item.id) {
+              <tr [class.income-row]="item.recordType === 'Income'" [class.expense-row]="item.recordType === 'Expense'">
+                <td>
+                  <span class="type-pill" [ngClass]="item.recordType">
+                    {{ item.recordType === 'Income' ? '＋ قبض / إيراد' : '－ صرف / مصروف' }}
+                  </span>
+                </td>
+                <td>{{ item.transactionDate | date:'dd/MM/yyyy' }}</td>
+                <td><b>{{ item.voucherNumber || '—' }}</b></td>
+                <td><span class="category-tag">{{ item.category }}</span></td>
+                <td>{{ item.partyName || '—' }}</td>
+                <td class="desc-cell">{{ item.description }}</td>
+                <td class="amount-cell" [class.inc]="item.recordType === 'Income'" [class.exp]="item.recordType === 'Expense'">
+                  {{ item.recordType === 'Income' ? '+' : '-' }}{{ item.amount | number:'1.2-2' }}
+                </td>
+                <td>
+                  @if (item.attachmentUrl) {
+                    <a [href]="api.getMediaUrl(item.attachmentUrl)" target="_blank" class="btn-file" title="عرض السند المرفق">
+                      📎 عرض
+                    </a>
+                  } @else {
+                    <span class="no-file">—</span>
+                  }
+                </td>
+                <td>
+                  <button class="btn-delete-row" (click)="deleteRecord(item.id)" title="حذف القيد">
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="9" class="empty-cell">لا توجد سجلات مالية مطابقة للفلاتر المحددة.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Add Record Modal -->
+  @if (showAddModal()) {
+    <div class="modal-backdrop" (click)="showAddModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header" [class.income]="modalType === 'Income'" [class.expense]="modalType === 'Expense'">
+          <h2>{{ modalType === 'Income' ? 'إضافة سند قبض وإيراد جديد' : 'إضافة سند صرف ومصروف جديد' }}</h2>
+          <button class="btn-close" (click)="showAddModal.set(false)">×</button>
+        </div>
+
+        <form (ngSubmit)="submitRecord()">
+          <div class="form-grid">
+            <label>
+              المبلغ *
+              <input type="number" [(ngModel)]="newRecord.amount" name="amount" required min="0.01" step="0.01" placeholder="0.00" />
+            </label>
+
+            <label>
+              تاريخ العملية *
+              <input type="date" [(ngModel)]="newRecord.transactionDate" name="transactionDate" required />
+            </label>
+
+            <label>
+              رقم السند / الإيصال
+              <input type="text" [(ngModel)]="newRecord.voucherNumber" name="voucherNumber" placeholder="مثال: سند-١٠٥" />
+            </label>
+
+            <label>
+              التصنيف والمجال *
+              <select [(ngModel)]="newRecord.category" name="category" required>
+                @for (cat of categories; track cat) {
+                  <option [value]="cat">{{ cat }}</option>
+                }
+              </select>
+            </label>
+
+            <label class="full-width">
+              الجهة / الشخص (المستلم أو الدافع)
+              <input type="text" [(ngModel)]="newRecord.partyName" name="partyName" placeholder="مثال: لجنة التكافل / المتبرع فلان" />
+            </label>
+
+            <label class="full-width">
+              البيان وأسباب ومجالات الصرف / القبض *
+              <textarea [(ngModel)]="newRecord.description" name="description" required rows="3" placeholder="تفاصيل صرف المبلغ ومسوغات العملية..."></textarea>
+            </label>
+
+            <div class="attachment-box full-width">
+              <b>مرفق السند أو الفاتورة (صورة أو PDF)</b>
+              <label class="btn-upload-file">
+                {{ isUploading() ? 'جاري رفع الملف...' : '📎 اختيار ملف السند من الجهاز' }}
+                <input type="file" (change)="uploadAttachment($event)" accept="image/*,application/pdf" [disabled]="isUploading()" />
+              </label>
+              @if (attachmentPreview) {
+                <span class="attachment-success">✓ تم رفع المرفق بنجاح</span>
+              }
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showAddModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save" [disabled]="newRecord.amount <= 0 || !newRecord.description || isUploading()">
+              حفظ السند المالي
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

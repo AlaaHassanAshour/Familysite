@@ -1,0 +1,65 @@
+<div class="login-wrapper" dir="rtl">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="brand-logo">ع</div>
+      <h1>مجلس عائلة عاشور</h1>
+      <p>تسجيل الدخول إلى لوحة التحكم الإدارية</p>
+    </div>
+
+    @if (errorMessage()) {
+      <div class="alert-error">
+        <span>⚠️</span>
+        <p>{{ errorMessage() }}</p>
+      </div>
+    }
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="username">اسم المستخدم</label>
+        <div class="input-icon-wrapper">
+          <input
+            id="username"
+            type="text"
+            [(ngModel)]="username"
+            name="username"
+            placeholder="أدخل اسم المستخدم"
+            required
+            autocomplete="username"
+            autofocus
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">كلمة المرور</label>
+        <div class="input-icon-wrapper">
+          <input
+            id="password"
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            placeholder="أدخل كلمة المرور"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+      </div>
+
+      <div class="admin-notice">
+        <small>🔒 إنشاء الحسابات مقتصر حصرياً على مدير النظام.</small>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="isLoading()">
+        @if (isLoading()) {
+          <span>جاري التحقق...</span>
+        } @else {
+          <span>دخول لوحة التحكم ←</span>
+        }
+      </button>
+    </form>
+
+    <div class="login-footer">
+      <a routerLink="/" class="back-link">← العودة إلى الموقع الرئيسي</a>
+    </div>
+  </div>
+</div>

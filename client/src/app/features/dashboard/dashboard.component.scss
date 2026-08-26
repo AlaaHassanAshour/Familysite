@@ -1,0 +1,336 @@
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: 'Cairo', sans-serif;
+}
+
+.hero {
+  background: linear-gradient(135deg, #1b4d3e 0%, #122820 100%);
+  color: #ffffff;
+  padding: 2.25rem 2rem;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 10px 24px rgba(27, 77, 62, 0.25);
+  flex-wrap: wrap;
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.2);
+    color: #ffd700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    margin: 0 0 0.4rem 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+  }
+
+  p {
+    margin: 0;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+    max-width: 600px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.75rem;
+
+    a {
+      padding: 0.7rem 1.2rem;
+      border-radius: 12px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-hero-primary {
+      background: #ffd700;
+      color: #122820;
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
+
+      &:hover {
+        transform: translateY(-2px);
+        background: #ffe033;
+      }
+    }
+
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+    }
+  }
+}
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 1.25rem;
+}
+
+.metric-card {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  }
+
+  .metric-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+
+    &.green { background: #dcfce7; }
+    &.blue { background: #dbeafe; }
+    &.gold { background: #fef3c7; }
+    &.purple { background: #f3e8ff; }
+  }
+
+  .metric-data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+
+    b {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #1e293b;
+      line-height: 1.2;
+    }
+
+    span {
+      font-size: 0.88rem;
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    small {
+      font-size: 0.78rem;
+      color: #94a3b8;
+    }
+  }
+}
+
+.finance-banner {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+
+  .banner-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.75rem;
+
+    h3 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    a {
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #1b4d3e;
+      text-decoration: none;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  .finance-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+
+    .f-item {
+      padding: 1rem;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+
+      span {
+        font-size: 0.82rem;
+        color: #64748b;
+        font-weight: 600;
+      }
+
+      b {
+        font-size: 1.4rem;
+        font-weight: 800;
+        line-height: 1.2;
+
+        small {
+          font-size: 0.75rem;
+          font-weight: 500;
+          color: #94a3b8;
+        }
+      }
+
+      &.inc {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        b { color: #15803d; }
+      }
+
+      &.exp {
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        b { color: #b91c1c; }
+      }
+
+      &.bal {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        b { color: #0369a1; }
+      }
+    }
+  }
+}
+
+.dashboard-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  background: #ffffff;
+  border-radius: 18px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+
+  .section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    padding-bottom: 0.75rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #1e293b;
+    }
+
+    a {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1b4d3e;
+      text-decoration: none;
+
+      &:hover { text-decoration: underline; }
+    }
+  }
+
+  .panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .list-row {
+    padding: 0.75rem;
+    background: #f8fafc;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+
+    .row-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+
+      b {
+        font-size: 0.92rem;
+        color: #1e293b;
+      }
+
+      span {
+        font-size: 0.8rem;
+        color: #64748b;
+      }
+    }
+
+    .row-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.25rem;
+
+      .status-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 0.15rem 0.5rem;
+        border-radius: 6px;
+        background: #e2e8f0;
+        color: #334155;
+      }
+
+      time {
+        font-size: 0.78rem;
+        color: #94a3b8;
+      }
+    }
+  }
+
+  .empty-txt {
+    text-align: center;
+    color: #94a3b8;
+    padding: 2rem 0;
+    margin: 0;
+    font-size: 0.9rem;
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: 3rem;
+  background: #ffffff;
+  border-radius: 16px;
+  color: #64748b;
+}

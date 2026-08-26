@@ -1,0 +1,85 @@
+<section class="settings-page" dir="rtl">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">تخصيص المنصة</span>
+      <h1>إعدادات وهوية الموقع</h1>
+      <p class="subtitle">تعديل بيانات العائلة العامة، نصوص الترحيب، ومعلومات التواصل المعروضة للزوار.</p>
+    </div>
+    <button class="btn-primary" (click)="save()" [disabled]="isSaving()">
+      {{ isSaving() ? 'جاري الحفظ...' : '💾 حفظ التغييرات' }}
+    </button>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <span>✓</span>
+      <p>{{ successMessage() }}</p>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-state"><p>جاري تحميل الإعدادات...</p></div>
+  } @else {
+    <div class="settings-card">
+      <form (ngSubmit)="save()">
+        <div class="section-title">
+          <h3>البيانات الأساسية والهوية</h3>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            اسم العائلة الرسمي
+            <input type="text" [(ngModel)]="model.familyName" name="familyName" required />
+          </label>
+
+          <label>
+            اسم المجلس
+            <input type="text" [(ngModel)]="model.councilName" name="councilName" required />
+          </label>
+
+          <label class="full-width">
+            رسالة الترحيب الرئيسية (في السلايدر والمقدمة)
+            <input type="text" [(ngModel)]="model.welcomeMessage" name="welcomeMessage" />
+          </label>
+
+          <label class="full-width">
+            الشعار النصي (Subtitle)
+            <input type="text" [(ngModel)]="model.heroSubtitle" name="heroSubtitle" />
+          </label>
+
+          <label class="full-width">
+            رؤية ورسالة المجلس
+            <textarea [(ngModel)]="model.visionText" name="visionText" rows="3"></textarea>
+          </label>
+        </div>
+
+        <div class="section-title mt-4">
+          <h3>معلومات التواصل والديوان العام</h3>
+        </div>
+
+        <div class="form-grid">
+          <label>
+            رقم الهاتف / الجوال المعتمد
+            <input type="text" [(ngModel)]="model.phone" name="phone" />
+          </label>
+
+          <label>
+            البريد الإلكتروني الرسمي
+            <input type="email" [(ngModel)]="model.email" name="email" />
+          </label>
+
+          <label class="full-width">
+            عنوان الديوان المركزي
+            <input type="text" [(ngModel)]="model.address" name="address" />
+          </label>
+        </div>
+
+        <div class="form-footer">
+          <button type="submit" class="btn-save" [disabled]="isSaving()">
+            {{ isSaving() ? 'جاري الحفظ...' : 'حفظ وتحديث الإعدادات' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</section>

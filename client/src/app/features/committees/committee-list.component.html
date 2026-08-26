@@ -1,0 +1,51 @@
+<section class="committee-view" (click)="activeMenuId = null">
+  <div class="view-heading">
+    <div>
+      <p>هيكل المجلس</p>
+      <h1>اللجان والمسؤوليات</h1>
+      <span>كل لجنة لها رئيس وأعضاء وأنشطة قابلة للإدارة.</span>
+    </div>
+    <button (click)="addRequested.emit()">＋ إضافة لجنة</button>
+  </div>
+
+  <div class="cards">
+    @for (committee of committees; track committee.id) {
+      <article
+        class="card"
+        (click)="selected.emit(committee.id)"
+        tabindex="0"
+        (keydown.enter)="selected.emit(committee.id)"
+      >
+        <div class="card-top">
+          <span class="icon">✦</span>
+
+          <div class="options-menu">
+            <button class="more" (click)="toggleMenu(committee.id, $event)" aria-label="خيارات اللجنة">
+              •••
+            </button>
+
+            @if (activeMenuId === committee.id) {
+              <div class="dropdown">
+                <button (click)="onEdit(committee, $event)">✏️ تعديل</button>
+                <button class="delete" (click)="onDelete(committee.id, $event)">🗑️ حذف</button>
+              </div>
+            }
+          </div>
+        </div>
+
+        <h2>{{ committee.name }}</h2>
+        <p>رئيس اللجنة</p>
+        <b>{{ committee.chairperson || 'غير معين' }}</b>
+
+        <div class="meta">
+          <span>👥 {{ committee.members }} أعضاء</span>
+          <span>✦ {{ committee.activities }} أنشطة</span>
+        </div>
+
+        <footer>فتح ملف وتفاصيل اللجنة ←</footer>
+      </article>
+    } @empty {
+      <div class="empty">لا توجد لجان مسجلة حتى الآن.</div>
+    }
+  </div>
+</section>

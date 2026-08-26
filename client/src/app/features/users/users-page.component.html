@@ -1,0 +1,218 @@
+<section class="users-page" dir="rtl">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">إدارة النظام والأذونات</span>
+      <h1>المستخدمون والحسابات الإدارية</h1>
+      <p class="subtitle">إنشاء وإدارة حسابات المشرفين والأعضاء بصلاحيات محددة حصرياً من لوحة الأدمن.</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateModal()">
+      ＋ إضافة مستخدم جديد
+    </button>
+  </div>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <span>✓</span>
+      <p>{{ successMessage() }}</p>
+    </div>
+  }
+
+  @if (errorMessage() && !showCreateModal() && !showEditModal() && !showPasswordModal()) {
+    <div class="alert alert-danger">
+      <span>⚠️</span>
+      <p>{{ errorMessage() }}</p>
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>جاري تحميل قائمة المستخدمين...</p>
+    </div>
+  } @else {
+    <div class="users-card-grid">
+      @for (user of users(); track user.id) {
+        <article class="user-card" [class.inactive]="!user.isActive">
+          <div class="card-header">
+            <div class="avatar" [class.admin]="user.role === 'Admin'">
+              {{ user.fullName.slice(0, 2) }}
+            </div>
+            <div class="user-main-info">
+              <h3>{{ user.fullName }}</h3>
+              <span class="username">&#64;{{ user.username }}</span>
+            </div>
+            <div class="status-badge" [class.active]="user.isActive">
+              {{ user.isActive ? 'نشط' : 'معطل' }}
+            </div>
+          </div>
+
+          <div class="card-body">
+            <div class="meta-row">
+              <span class="label">الصلاحية:</span>
+              <span class="role-tag" [ngClass]="user.role">
+                {{ user.role === 'Admin' ? 'مدير نظام (Admin)' : (user.role === 'Editor' ? 'محرر محتوى (Editor)' : 'مشاهد (Viewer)') }}
+              </span>
+            </div>
+            @if (user.email) {
+              <div class="meta-row">
+                <span class="label">البريد:</span>
+                <span class="val">{{ user.email }}</span>
+              </div>
+            }
+            <div class="meta-row">
+              <span class="label">تاريخ الإنشاء:</span>
+              <span class="val">{{ user.createdAt | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn-action edit" (click)="openEditModal(user)" title="تعديل البيانات">
+              ✏️ تعديل
+            </button>
+            <button class="btn-action key" (click)="openPasswordModal(user)" title="تغيير كلمة المرور">
+              🔑 كلمة المرور
+            </button>
+            @if (user.id !== auth.currentUser()?.id) {
+              <button class="btn-action delete" (click)="deleteUser(user)" title="حذف المستخدم">
+                🗑️ حذف
+              </button>
+            }
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <p>لا يوجد مستخدمون مسجلون في النظام حالياً.</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Create Modal -->
+  @if (showCreateModal()) {
+    <div class="modal-backdrop" (click)="showCreateModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>إضافة حساب مستخدم جديد</h2>
+          <button class="btn-close" (click)="showCreateModal.set(false)">×</button>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="modal-alert-error">{{ errorMessage() }}</div>
+        }
+
+        <form (ngSubmit)="submitCreate()">
+          <div class="form-grid">
+            <label>
+              اسم المستخدم (للدخول) *
+              <input type="text" [(ngModel)]="newUser.username" name="username" required placeholder="مثال: ahmad_ashour" />
+            </label>
+            <label>
+              كلمة المرور *
+              <input type="password" [(ngModel)]="newUser.password" name="password" required placeholder="٦ خانات على الأقل" />
+            </label>
+            <label>
+              الاسم الكامل رباعياً *
+              <input type="text" [(ngModel)]="newUser.fullName" name="fullName" required placeholder="مثال: أحمد محمد خليل عاشور" />
+            </label>
+            <label>
+              البريد الإلكتروني
+              <input type="email" [(ngModel)]="newUser.email" name="email" placeholder="name@example.com" />
+            </label>
+            <label class="full-width">
+              مستوى الصلاحية والأذونات *
+              <select [(ngModel)]="newUser.role" name="role" required>
+                <option value="Admin">مدير نظام كامل (Admin) - كافة الصلاحيات</option>
+                <option value="Editor">محرر محتوى ولجان (Editor) - إدارة المحتوى والأنشطة</option>
+                <option value="Viewer">مشاهد فقط (Viewer) - استعراض اللوحة والتقارير</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showCreateModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save">إنشاء الحساب</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Edit Modal -->
+  @if (showEditModal()) {
+    <div class="modal-backdrop" (click)="showEditModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>تعديل بيانات المستخدم</h2>
+          <button class="btn-close" (click)="showEditModal.set(false)">×</button>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="modal-alert-error">{{ errorMessage() }}</div>
+        }
+
+        <form (ngSubmit)="submitEdit()">
+          <div class="form-grid">
+            <label>
+              الاسم الكامل *
+              <input type="text" [(ngModel)]="editUser.fullName" name="fullName" required />
+            </label>
+            <label>
+              البريد الإلكتروني
+              <input type="email" [(ngModel)]="editUser.email" name="email" />
+            </label>
+            <label>
+              مستوى الصلاحية *
+              <select [(ngModel)]="editUser.role" name="role" required>
+                <option value="Admin">مدير نظام (Admin)</option>
+                <option value="Editor">محرر محتوى (Editor)</option>
+                <option value="Viewer">مشاهد (Viewer)</option>
+              </select>
+            </label>
+            <label>
+              حالة الحساب
+              <select [(ngModel)]="editUser.isActive" name="isActive">
+                <option [ngValue]="true">نشط ومفعل</option>
+                <option [ngValue]="false">معطل وموقوف</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showEditModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save">حفظ التعديلات</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Reset Password Modal -->
+  @if (showPasswordModal()) {
+    <div class="modal-backdrop" (click)="showPasswordModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>تغيير كلمة المرور</h2>
+          <button class="btn-close" (click)="showPasswordModal.set(false)">×</button>
+        </div>
+
+        <p class="modal-subtitle">تعيين كلمة مرور جديدة للمستخدم: <b>{{ passwordModel.userName }}</b></p>
+
+        @if (errorMessage()) {
+          <div class="modal-alert-error">{{ errorMessage() }}</div>
+        }
+
+        <form (ngSubmit)="submitPassword()">
+          <div class="form-group">
+            <label>كلمة المرور الجديدة *</label>
+            <input type="password" [(ngModel)]="passwordModel.newPassword" name="newPassword" required placeholder="أدخل ٦ خانات على الأقل" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showPasswordModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save">تأكيد كلمة المرور</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

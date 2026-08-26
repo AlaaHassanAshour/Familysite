@@ -1,0 +1,214 @@
+<section class="member-view" dir="rtl">
+  <div class="view-heading">
+    <div>
+      <p class="eyebrow">دليل وسجل العائلة</p>
+      <h1>شجرة وأفراد عائلة عاشور</h1>
+      <span class="desc-text">استعراض وإدارة السجل المدني والنسب لأبناء العائلة وفروعها الستة.</span>
+    </div>
+    <div class="header-actions">
+      <div class="tabs-pill">
+        <button [class.active]="activeTab() === 'list'" (click)="activeTab.set('list')">📋 دليل الأفراد</button>
+        <button [class.active]="activeTab() === 'tree'" (click)="activeTab.set('tree')">🌳 الشجرة المرئية</button>
+      </div>
+      <button class="btn-add" (click)="addRequested.emit()">＋ إضافة فرد جديد</button>
+    </div>
+  </div>
+
+  <!-- Filters Bar -->
+  <div class="filter-bar">
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (input)="onFilterChange()"
+        placeholder="🔍 ابحث بالاسم الرباعي، رقم الهوية، أو الجوال..."
+      />
+    </div>
+
+    <div class="select-group">
+      <select [(ngModel)]="selectedBranchId" (change)="onFilterChange()">
+        <option [ngValue]="null">كل الفروع (الستة)</option>
+        @for (b of branches; track b.id) {
+          <option [ngValue]="b.id">{{ b.name }}</option>
+        }
+      </select>
+
+      <select [(ngModel)]="selectedStatus" (change)="onFilterChange()">
+        <option value="all">كل الحالات الاجتماعية</option>
+        <option value="متزوج">متزوج / ة</option>
+        <option value="أعزب">أعزب / عزباء</option>
+        <option value="شهيد">شهيد</option>
+        <option value="متوفي">متوفي</option>
+        <option value="مطلق">مطلق / ة</option>
+        <option value="أرمل">أرمل / ة</option>
+      </select>
+
+      <label class="council-filter">
+        <input type="checkbox" [(ngModel)]="councilOnly" (change)="onFilterChange()" />
+        <span>أعضاء المجلس فقط</span>
+      </label>
+
+      @if (selectedBranchId || selectedStatus !== 'all' || searchQuery || councilOnly) {
+        <button class="btn-reset" (click)="resetFilters()">إلغاء الفلاتر ↺</button>
+      }
+    </div>
+  </div>
+
+  <!-- TAB 1: LIST VIEW -->
+  @if (activeTab() === 'list') {
+    <div class="member-grid">
+      @for (member of members; track member.id) {
+        <article class="member-card" [ngClass]="member.status">
+          <div class="card-top">
+            <div class="avatar">
+              @if (member.photoUrl) {
+                <img [src]="api.getMediaUrl(member.photoUrl)" [alt]="member.fullName" />
+              } @else {
+                <span>{{ member.fullName.slice(0, 2) }}</span>
+              }
+            </div>
+
+            <div class="status-tags">
+              <span class="status-badge" [ngClass]="member.status">{{ member.status }}</span>
+              @if (member.isCouncilMember) {
+                <span class="council-badge">مجلس العائلة</span>
+              }
+            </div>
+          </div>
+
+          <div class="member-data">
+            <h3 class="name">{{ member.fullName }}</h3>
+            @if (member.isCouncilMember) {
+              <strong class="role">{{ member.councilRole }}</strong>
+            }
+            
+            <div class="details-list">
+              <div class="detail-item">
+                <span class="icon">🏛️</span>
+                <span>{{ member.branch }}</span>
+              </div>
+              <div class="detail-item">
+                <span class="icon">👤</span>
+                <span>الأب: <b>{{ member.fatherName }}</b></span>
+              </div>
+              @if (member.nationalId) {
+                <div class="detail-item">
+                  <span class="icon">🪪</span>
+                  <span>الهوية: {{ member.nationalId }}</span>
+                </div>
+              }
+              @if (member.phone) {
+                <div class="detail-item">
+                  <span class="icon">📞</span>
+                  <span>{{ member.phone }}</span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="member-actions">
+            <button
+              class="btn-edit"
+              aria-label="تعديل العضو"
+              title="تعديل البيانات"
+              (click)="editRequested.emit(member)"
+            >
+              ✏️ تعديل
+            </button>
+            <button
+              class="btn-delete"
+              aria-label="حذف العضو"
+              title="حذف من السجل"
+              (click)="deleteRequested.emit(member.id)"
+            >
+              🗑️ حذف
+            </button>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty">لا توجد بيانات مطابقة لخيارات البحث أو الفلترة.</div>
+      }
+    </div>
+  }
+
+  <!-- TAB 2: VISUAL TREE VIEW -->
+  @if (activeTab() === 'tree') {
+    <div class="tree-canvas">
+      <div class="tree-header">
+        <h2>🌳 شجرة نسب عائلة عاشور الممتدة</h2>
+        <p>عرض هرمي تفاعلي للأجداد والآباء والأبناء بحسب الفروع والتسلسل العائلي</p>
+      </div>
+
+      <div class="roots-container">
+        @for (root of getRootMembers(); track root.id) {
+          <div class="family-node-branch">
+            <!-- Root ancestor card -->
+            <div class="tree-card root-card">
+              <div class="node-avatar">
+                @if (root.photoUrl) {
+                  <img [src]="api.getMediaUrl(root.photoUrl)" [alt]="root.fullName" />
+                } @else {
+                  <span>👤</span>
+                }
+              </div>
+              <div class="node-info">
+                <h4>{{ root.fullName }}</h4>
+                <small>{{ root.branch }}</small>
+                <span class="node-status">{{ root.status }}</span>
+              </div>
+            </div>
+
+            <!-- Children level 1 -->
+            @if (getChildren(root.id); as children) {
+              @if (children.length > 0) {
+                <div class="children-line"></div>
+                <div class="children-container">
+                  @for (child of children; track child.id) {
+                    <div class="child-sub-branch">
+                      <div class="tree-card child-card">
+                        <div class="node-avatar">
+                          @if (child.photoUrl) {
+                            <img [src]="api.getMediaUrl(child.photoUrl)" [alt]="child.fullName" />
+                          } @else {
+                            <span>👤</span>
+                          }
+                        </div>
+                        <div class="node-info">
+                          <h5>{{ child.fullName }}</h5>
+                          <small>{{ child.councilRole }}</small>
+                          <span class="node-status">{{ child.status }}</span>
+                        </div>
+                      </div>
+
+                      <!-- Children level 2 -->
+                      @if (getChildren(child.id); as grandChildren) {
+                        @if (grandChildren.length > 0) {
+                          <div class="children-line"></div>
+                          <div class="children-container">
+                            @for (g of grandChildren; track g.id) {
+                              <div class="tree-card grand-child-card">
+                                <div class="node-avatar small">
+                                  <span>👤</span>
+                                </div>
+                                <div class="node-info">
+                                  <h6>{{ g.fullName }}</h6>
+                                  <span class="node-status">{{ g.status }}</span>
+                                </div>
+                              </div>
+                            }
+                          </div>
+                        }
+                      }
+                    </div>
+                  }
+                </div>
+              }
+            }
+          </div>
+        } @empty {
+          <div class="empty">لا توجد أصول عائلية مسجلة لعرضها بالشجرة.</div>
+        }
+      </div>
+    </div>
+  }
+</section>

@@ -1,0 +1,507 @@
+<div class="landing-wrapper" dir="rtl">
+  <!-- TOP STICKY NAVBAR -->
+  <header class="public-navbar">
+    <div class="nav-container">
+      <div class="nav-brand">
+        <span class="brand-crest">ع</span>
+        <div class="brand-text">
+          <b>{{ settings()?.familyName || 'عائلة عاشور' }}</b>
+          <small>{{ settings()?.councilName || 'مجلس العائلة الرسمي' }}</small>
+        </div>
+      </div>
+
+      <nav class="nav-links">
+        <a (click)="scrollTo('#hero')">الرئيسية</a>
+        <a (click)="scrollTo('#council')">المجلس واللجان</a>
+        <a (click)="scrollTo('#activities')">الأنشطة</a>
+        <a (click)="scrollTo('#albums')">الألبومات</a>
+        <a (click)="scrollTo('#events')">المناسبات القادمة</a>
+        <a (click)="scrollTo('#tree')">شجرة العائلة</a>
+        <a (click)="scrollTo('#decisions')">قرارات المجلس</a>
+      </nav>
+
+      <div class="nav-actions">
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/admin/dashboard" class="btn-admin-nav">
+            🛡️ لوحة الإدارة
+          </a>
+        } @else {
+          <a routerLink="/login" class="btn-login-nav">
+            🔒 دخول المشرفين
+          </a>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- 1. HERO SLIDER SECTION -->
+  <section id="hero" class="hero-slider">
+    @for (slide of slides; track $index) {
+      <div class="slide-item" [class.active]="currentSlide() === $index" [ngClass]="slide.bgClass">
+        <div class="slide-overlay"></div>
+        <div class="slide-content">
+          <span class="slide-badge">{{ slide.badge }}</span>
+          <h1 class="slide-title">{{ slide.title }}</h1>
+          <p class="slide-subtitle">{{ slide.subtitle }}</p>
+
+          <div class="slide-actions">
+            <button class="btn-cta primary" (click)="scrollTo(slide.ctaTarget)">
+              {{ slide.ctaText }} ←
+            </button>
+            <button class="btn-cta secondary" (click)="scrollTo('#council')">
+              المجلس واللجان
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Slider Controls -->
+    <button class="slider-btn prev" (click)="prevSlide()" aria-label="السابق">‹</button>
+    <button class="slider-btn next" (click)="nextSlide()" aria-label="التالي">›</button>
+
+    <div class="slider-dots">
+      @for (s of slides; track $index) {
+        <button [class.active]="currentSlide() === $index" (click)="setSlide($index)"></button>
+      }
+    </div>
+  </section>
+
+  <!-- QUICK STATS BAR -->
+  <section class="quick-stats-bar">
+    <div class="container stats-inner">
+      <div class="stat-box">
+        <span class="num">٦</span>
+        <span class="lbl">فروع العائلة الكبرى</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-box">
+        <span class="num">{{ members().length }}</span>
+        <span class="lbl">أبناء العائلة الموثقين</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-box">
+        <span class="num">{{ committees().length }}</span>
+        <span class="lbl">لجان تخصصية فاعلة</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-box">
+        <span class="num">{{ albums().length }}</span>
+        <span class="lbl">ألبومات توثيقية</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. COUNCIL & COMMITTEES STRUCTURE -->
+  <section id="council" class="section council-section">
+    <div class="container">
+      <div class="section-heading text-center">
+        <span class="eyebrow">الهيكلية التنظيمية</span>
+        <h2>مجلس العائلة واللجان المتخصصة</h2>
+        <p>يمثل المجلس قيادة الفروع الستة ويرأس أعضاؤه اللجان الخدمية والاجتماعية.</p>
+      </div>
+
+      <!-- Leadership Grid -->
+      <div class="leaders-grid">
+        @for (leader of councilLeaders().slice(0, 4); track leader.id) {
+          <div class="leader-card">
+            <div class="leader-avatar">
+              @if (leader.photoUrl) {
+                <img [src]="api.getMediaUrl(leader.photoUrl)" [alt]="leader.fullName" />
+              } @else {
+                <span>👤</span>
+              }
+            </div>
+            <h3>{{ leader.fullName }}</h3>
+            <span class="leader-role">{{ leader.councilRole }}</span>
+            <small class="branch-tag">{{ leader.branch }}</small>
+          </div>
+        }
+      </div>
+
+      <!-- Committees Grid -->
+      <div class="committees-heading">
+        <h3>اللجان العائلية (اضغط على أي لجنة لاستعراض أعضائها وأنشطتها)</h3>
+      </div>
+
+      <div class="committees-grid">
+        @for (comm of committees(); track comm.id) {
+          <div class="committee-card" (click)="openCommitteeModal(comm.id)">
+            <div class="card-icon">✦</div>
+            <h4>{{ comm.name }}</h4>
+            <p class="desc">{{ comm.description || 'تعزيز العمل العائلي المشترك' }}</p>
+            
+            <div class="comm-meta">
+              <span>رئيس اللجنة: <b>{{ comm.chairperson }}</b></span>
+              <div class="counts">
+                <span>👥 {{ comm.members }} أعضاء</span>
+                <span>✦ {{ comm.activities }} أنشطة</span>
+              </div>
+            </div>
+
+            <span class="view-more-link">استعراض ملف اللجنة والأنشطة ←</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. LATEST 4 ACTIVITIES -->
+  <section id="activities" class="section activities-section">
+    <div class="container">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">المبادرات والمشاريع</span>
+          <h2>أحدث الأنشطة والفعاليات</h2>
+          <p>آخر ٤ فعاليات تم إنجازها أو التخطيط لها لخدمة أبناء العائلة.</p>
+        </div>
+      </div>
+
+      <div class="activities-grid">
+        @for (act of latestActivities(); track act.id) {
+          <article class="activity-card">
+            <div class="card-header">
+              <span class="badge" [ngClass]="act.status">{{ act.status }}</span>
+              <span class="comm-tag">{{ act.committeeName }}</span>
+            </div>
+
+            <h3>{{ act.title }}</h3>
+            <p class="desc">{{ act.description }}</p>
+
+            <div class="card-footer">
+              <span class="date">📅 {{ act.scheduledAt | date:'dd/MM/yyyy' }}</span>
+              @if (act.location) {
+                <span class="loc">📍 {{ act.location }}</span>
+              }
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-msg">لا توجد أنشطة مضافة حالياً.</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. MEDIA ALBUMS GALLERY -->
+  <section id="albums" class="section albums-section">
+    <div class="container">
+      <div class="section-heading text-center">
+        <span class="eyebrow">أرشيف وذاكرة العائلة</span>
+        <h2>معرض الصور ومقاطع الفيديو</h2>
+        <p>ألبومات توثق المناسبات الرسمية، حفلات التكريم، والبطولات الرياضية.</p>
+      </div>
+
+      <div class="albums-grid">
+        @for (album of albums(); track album.id) {
+          <article class="album-card" (click)="openAlbumLightbox(album.id)">
+            <div class="album-cover">
+              @if (album.coverImageUrl) {
+                <img [src]="api.getMediaUrl(album.coverImageUrl)" [alt]="album.title" />
+              } @else {
+                <div class="no-cover"><span>🖼️</span></div>
+              }
+              <div class="album-badges">
+                <span class="b-item">📷 {{ album.photoCount }}</span>
+                <span class="b-item">🎥 {{ album.videoCount }}</span>
+              </div>
+            </div>
+
+            <div class="album-info">
+              <h3>{{ album.title }}</h3>
+              <p>{{ album.description }}</p>
+              <span class="date">📅 {{ (album.eventDate || album.createdAt) | date:'dd/MM/yyyy' }}</span>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-msg">لا توجد ألبومات معروضة حالياً.</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. UPCOMING EVENTS -->
+  <section id="events" class="section events-section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">الروزنامة العائلية</span>
+        <h2>المناسبات والأحداث القادمة</h2>
+        <p>جدول الفعاليات والمناسبات المخطط لها مستقبلاً لأبناء العائلة.</p>
+      </div>
+
+      <div class="events-timeline">
+        @for (ev of upcomingEvents(); track ev.id) {
+          <div class="event-row">
+            <div class="event-date">
+              <b class="day">{{ ev.eventDate | date:'dd' }}</b>
+              <span class="month">{{ ev.eventDate | date:'MMM' }}</span>
+              <span class="year">{{ ev.eventDate | date:'yyyy' }}</span>
+            </div>
+
+            <div class="event-details">
+              <div class="top-tag">
+                <span class="type">{{ ev.eventType }}</span>
+              </div>
+              <h3>{{ ev.title }}</h3>
+              <p>{{ ev.description }}</p>
+              <div class="meta">
+                @if (ev.location) { <span>📍 {{ ev.location }}</span> }
+                @if (ev.contactPerson) { <span>📞 {{ ev.contactPerson }}</span> }
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-msg">لا توجد مناسبات قادمة مجدولة حالياً.</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. FAMILY TREE & DIRECTORY EXPLORER -->
+  <section id="tree" class="section tree-section">
+    <div class="container">
+      <div class="section-heading text-center">
+        <span class="eyebrow">الأنساب والفروع</span>
+        <h2>دليل وشجرة أفراد عائلة عاشور</h2>
+        <p>استكشف فروع العائلة الستة والبحث عن الأفراد بالاسم والفرع والحالة.</p>
+      </div>
+
+      <!-- Search in Directory -->
+      <div class="tree-search-bar">
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          placeholder="🔍 ابحث بالاسم الرباعي أو رقم الهوية..."
+        />
+        <select [(ngModel)]="selectedBranchFilter">
+          <option [ngValue]="null">كل الفروع (الستة)</option>
+          @for (b of branches(); track b.id) {
+            <option [ngValue]="b.id">{{ b.name }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Member Grid Preview -->
+      <div class="public-members-grid">
+        @for (m of filteredMembers; track m.id) {
+          <div class="public-member-card">
+            <div class="m-avatar">
+              @if (m.photoUrl) {
+                <img [src]="api.getMediaUrl(m.photoUrl)" [alt]="m.fullName" />
+              } @else {
+                <span>👤</span>
+              }
+            </div>
+            <div class="m-info">
+              <h4>{{ m.fullName }}</h4>
+              <small class="branch">🏛️ {{ m.branch }}</small>
+              <small class="father">الأب: <b>{{ m.fatherName }}</b></small>
+              <span class="status-pill" [ngClass]="m.status">{{ m.status }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. COUNCIL DECISIONS -->
+  <section id="decisions" class="section decisions-section">
+    <div class="container">
+      <div class="section-heading text-center">
+        <span class="eyebrow">الشفافية والتنظيم</span>
+        <h2>قرارات وبيانات مجلس العائلة</h2>
+        <p>القرارات الرسمية المعتمدة الصادرة عن جلسات المجلس.</p>
+      </div>
+
+      <div class="decisions-list">
+        @for (d of decisions(); track d.id) {
+          <div class="decision-item">
+            <div class="d-header">
+              <span class="ref">{{ d.referenceNumber || 'بيان رسمي' }}</span>
+              <span class="date">{{ d.decisionDate | date:'dd/MM/yyyy' }}</span>
+            </div>
+            <h3>{{ d.title }}</h3>
+            <p>{{ d.details }}</p>
+            @if (d.attachmentUrl) {
+              <a [href]="api.getMediaUrl(d.attachmentUrl)" target="_blank" class="btn-attach">
+                📄 تحميل وثيقة القرار
+              </a>
+            }
+          </div>
+        } @empty {
+          <div class="empty-msg">لا توجد قرارات منشورة حالياً.</div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="public-footer">
+    <div class="container footer-inner">
+      <div class="footer-col brand-col">
+        <div class="footer-brand">
+          <span class="crest">ع</span>
+          <div>
+            <b>{{ settings()?.familyName || 'عائلة عاشور' }}</b>
+            <small>{{ settings()?.councilName || 'مجلس العائلة' }}</small>
+          </div>
+        </div>
+        <p class="vision">{{ settings()?.visionText || 'تعزيز أواصر القربى والتكافل الاجتماعي وتمكين طاقات الشباب وتوثيق تاريخ وإنجازات العائلة.' }}</p>
+      </div>
+
+      <div class="footer-col links-col">
+        <h4>روابط سريعة</h4>
+        <ul>
+          <li><a (click)="scrollTo('#hero')">الرئيسية</a></li>
+          <li><a (click)="scrollTo('#council')">المجلس واللجان</a></li>
+          <li><a (click)="scrollTo('#activities')">الأنشطة والفعاليات</a></li>
+          <li><a (click)="scrollTo('#albums')">معرض الألبومات</a></li>
+          <li><a (click)="scrollTo('#tree')">شجرة العائلة</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col contact-col">
+        <h4>التواصل والديوان</h4>
+        <p>📍 {{ settings()?.address || 'ديوان عائلة عاشور المركزي' }}</p>
+        <p>📞 هاتف: {{ settings()?.phone || '0590000000' }}</p>
+        <p>✉️ بريد: {{ settings()?.email || 'contact@ashour-family.org' }}</p>
+        <a routerLink="/login" class="admin-login-btn">🔒 دخول المشرفين للوحة التحكم</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© جميع الحقوق محفوظة — مجلس عائلة عاشور ١٤٤٧ هـ / ٢٠٢٦ م</p>
+    </div>
+  </footer>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. COMMITTEE INTERACTIVE MODAL -->
+  @if (selectedCommitteeDetails(); as comm) {
+    <div class="modal-backdrop" (click)="closeCommitteeModal()">
+      <div class="modal-card committee-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <div>
+            <span class="eyebrow">ملف اللجنة العائلية</span>
+            <h2>{{ comm.name }}</h2>
+          </div>
+          <button class="btn-close" (click)="closeCommitteeModal()">×</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="comm-bio">
+            <p>{{ comm.description || 'لا يوجد وصف تفصيلي للجنة' }}</p>
+          </div>
+
+          <!-- Chairperson Card -->
+          <div class="chairperson-box">
+            <div class="c-avatar">
+              @if (comm.chairperson.photoUrl) {
+                <img [src]="api.getMediaUrl(comm.chairperson.photoUrl)" [alt]="comm.chairperson.fullName" />
+              } @else {
+                <span>👤</span>
+              }
+            </div>
+            <div class="c-info">
+              <span class="label">رئيس ومسؤول اللجنة:</span>
+              <h3>{{ comm.chairperson.fullName }}</h3>
+              <small>{{ comm.chairperson.role || 'عضو مجلس' }}</small>
+              @if (comm.chairperson.phone) {
+                <small class="phone">📞 {{ comm.chairperson.phone }}</small>
+              }
+            </div>
+          </div>
+
+          <!-- Members List -->
+          <div class="section-block">
+            <h4>قائمة أعضاء اللجنة ({{ comm.members.length }} أعضاء)</h4>
+            <div class="comm-members-list">
+              @for (m of comm.members; track m.id) {
+                <div class="m-chip">
+                  <span>👤</span>
+                  <b>{{ m.fullName }}</b>
+                  <small>{{ m.councilRole }}</small>
+                </div>
+              } @empty {
+                <p class="empty-small">لم يتم تعيين أعضاء إضافيين للجنة بعد.</p>
+              }
+            </div>
+          </div>
+
+          <!-- Linked Activities -->
+          <div class="section-block">
+            <h4>الأنشطة والفعاليات المرتبطة باللجنة ({{ comm.activities.length }})</h4>
+            <div class="comm-activities-list">
+              @for (act of comm.activities; track act.id) {
+                <div class="act-item">
+                  <div class="act-top">
+                    <b>{{ act.title }}</b>
+                    <span class="act-status">{{ act.status }}</span>
+                  </div>
+                  <p>{{ act.description }}</p>
+                  <time>📅 {{ act.scheduledAt | date:'dd/MM/yyyy' }}</time>
+                </div>
+              } @empty {
+                <p class="empty-small">لا توجد فعاليات مسجلة لهذه اللجنة حالياً.</p>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-close-modal" (click)="closeCommitteeModal()">إغلاق</button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- 2. ALBUM LIGHTBOX MODAL -->
+  @if (selectedAlbumDetails(); as album) {
+    <div class="modal-backdrop lightbox-backdrop" (click)="closeAlbumLightbox()">
+      <div class="lightbox-card" (click)="$event.stopPropagation()">
+        <button class="lightbox-close" (click)="closeAlbumLightbox()">×</button>
+        
+        <div class="lightbox-header">
+          <h2>{{ album.title }}</h2>
+          <p>{{ album.description }}</p>
+        </div>
+
+        @if (album.items && album.items.length > 0) {
+          <div class="lightbox-media-viewer">
+            @let currentItem = album.items[activeMediaIndex()];
+
+            @if (currentItem.mediaType === 'Photo') {
+              <img [src]="api.getMediaUrl(currentItem.filePath)" [alt]="currentItem.title || 'صورة'" class="viewer-img" />
+            } @else {
+              <video [src]="api.getMediaUrl(currentItem.filePath)" controls autoplay class="viewer-video"></video>
+            }
+
+            <button class="nav-btn prev" (click)="prevMedia()">‹</button>
+            <button class="nav-btn next" (click)="nextMedia()">›</button>
+          </div>
+
+          <div class="media-index-bar">
+            <span>الملف {{ activeMediaIndex() + 1 }} من {{ album.items.length }}</span>
+            <b>{{ album.items[activeMediaIndex()].title }}</b>
+          </div>
+
+          <!-- Thumbnails Strip -->
+          <div class="thumbnails-strip">
+            @for (item of album.items; track item.id; let idx = $index) {
+              <div class="thumb-item" [class.selected]="activeMediaIndex() === idx" (click)="activeMediaIndex.set(idx)">
+                @if (item.mediaType === 'Photo') {
+                  <img [src]="api.getMediaUrl(item.filePath)" />
+                } @else {
+                  <span class="video-icon">▶</span>
+                }
+              </div>
+            }
+          </div>
+        } @else {
+          <div class="empty-lightbox">
+            <p>لا توجد وسائط داخل هذا الألبوم بعد.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</div>

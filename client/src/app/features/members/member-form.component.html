@@ -1,0 +1,145 @@
+<form class="member-form" dir="rtl" (click)="$event.stopPropagation()" (ngSubmit)="submit()">
+  <div class="form-heading">
+    <div>
+      <p class="eyebrow">سجل أفراد العائلة</p>
+      <h2>{{ member?.id ? 'تعديل بيانات فرد / عضو' : 'إضافة فرد جديد في شجرة العائلة' }}</h2>
+      <p class="desc">تسجيل البيانات الشخصية والنسب والعلاقة في شجرة العائلة.</p>
+    </div>
+    <button type="button" class="close" (click)="cancelled.emit()">×</button>
+  </div>
+
+  <div class="photo-field">
+    <div class="photo-preview">
+      @if (photoPreview) {
+        <img [src]="photoPreview" alt="الصورة الشخصية" />
+      } @else {
+        <span>👤</span>
+      }
+    </div>
+    <div class="photo-actions">
+      <b>الصورة الشخصية</b>
+      <small>يتم حفظ وتخزين الصورة مباشرة على خادم النظام المحلي (Server Storage)</small>
+      <label class="upload-button" [class.loading]="isUploading()">
+        {{ isUploading() ? 'جاري الرفع على السيرفر...' : '📷 اختيار ورفع صورة' }}
+        <input type="file" accept="image/png,image/jpeg,image/webp" (change)="selectPhoto($event)" [disabled]="isUploading()" />
+      </label>
+    </div>
+  </div>
+
+  <div class="fields-grid">
+    <label class="full-width">
+      الاسم الرباعي الكامل *
+      <input
+        name="fullName"
+        [(ngModel)]="value.fullName"
+        required
+        placeholder="مثال: محمود عبد الله إبراهيم عاشور"
+      />
+    </label>
+
+    <label>
+      رقم الهوية الوطنية
+      <input
+        name="nationalId"
+        [(ngModel)]="value.nationalId"
+        placeholder="مثال: 900123456"
+      />
+    </label>
+
+    <label>
+      تاريخ الميلاد
+      <input
+        name="birthDate"
+        [(ngModel)]="value.birthDate"
+        type="date"
+      />
+    </label>
+
+    <label>
+      رقم الجوال
+      <input
+        name="phone"
+        [(ngModel)]="value.phone"
+        type="tel"
+        placeholder="059 xxx xxxx"
+      />
+    </label>
+
+    <label>
+      البريد الإلكتروني
+      <input
+        name="email"
+        [(ngModel)]="value.email"
+        type="email"
+        placeholder="user@ashour-family.org"
+      />
+    </label>
+
+    <label>
+      فرع العائلة التابع له (من الفروع الستة) *
+      <select name="branchId" [(ngModel)]="value.branchId" required>
+        @for (b of branches(); track b.id) {
+          <option [ngValue]="b.id">{{ b.name }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      الأب (النسب في الشجرة) - اختياري
+      <select name="fatherId" [(ngModel)]="value.fatherId">
+        <option [ngValue]="null">بدون أب مسجل (رأس فرع / قمة الشجرة)</option>
+        @for (m of allMembers(); track m.id) {
+          <option [ngValue]="m.id">{{ m.fullName }} ({{ m.branch }})</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      الحالة الاجتماعية / الشخصية *
+      <select name="status" [(ngModel)]="value.status" required>
+        <option value="متزوج">متزوج / ة</option>
+        <option value="أعزب">أعزب / عزباء</option>
+        <option value="شهيد">شهيد (رحمه الله)</option>
+        <option value="متوفي">متوفي (رحمه الله)</option>
+        <option value="مطلق">مطلق / ة</option>
+        <option value="أرمل">أرمل / ة</option>
+      </select>
+    </label>
+
+    <label>
+      الجنس
+      <select name="gender" [(ngModel)]="value.gender">
+        <option value="ذكر">ذكر</option>
+        <option value="أنثى">أنثى</option>
+      </select>
+    </label>
+
+    <div class="council-membership full-width">
+      <label class="checkbox-label">
+        <input type="checkbox" name="isCouncilMember" [(ngModel)]="value.isCouncilMember" />
+        <b>عضو في مجلس العائلة</b>
+      </label>
+
+      @if (value.isCouncilMember) {
+        <div class="role-selector">
+          <span>صفة ودور العضو في المجلس:</span>
+          <select name="councilRole" [(ngModel)]="value.councilRole">
+            <option value="رئيس المجلس">رئيس المجلس</option>
+            <option value="نائب رئيس المجلس">نائب رئيس المجلس</option>
+            <option value="أمين السر">أمين السر</option>
+            <option value="أمين الصندوق">أمين الصندوق</option>
+            <option value="رئيس لجنة">رئيس لجنة</option>
+            <option value="عضو مجلس">عضو مجلس</option>
+          </select>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="cancel" (click)="cancelled.emit()">إلغاء</button>
+    <button class="save" type="submit" [disabled]="!value.fullName || isUploading()">
+      {{ member?.id ? 'حفظ التعديلات' : 'إضافة الفرد إلى السجل' }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,103 @@
+<section class="decisions-page" dir="rtl">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">التوثيق والإعلانات الرسمية</span>
+      <h1>قرارات وبيانات مجلس العائلة</h1>
+      <p class="subtitle">إصدار ونشر وتوثيق القرارات الرسمية الصادرة عن مجلس عائلة عاشور.</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateModal()">
+      ＋ إضافة قرار جديد
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state"><p>جاري تحميل القرارات...</p></div>
+  } @else {
+    <div class="decisions-grid">
+      @for (d of decisions(); track d.id) {
+        <article class="decision-card">
+          <div class="card-header">
+            <span class="ref-badge">{{ d.referenceNumber || 'قرار عام' }}</span>
+            <span class="date">{{ d.decisionDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+
+          <h2 class="title">{{ d.title }}</h2>
+          <p class="details">{{ d.details || 'لا توجد تفاصيل إضافية' }}</p>
+
+          <div class="card-footer">
+            @if (d.attachmentUrl) {
+              <a [href]="api.getMediaUrl(d.attachmentUrl)" target="_blank" class="btn-attachment">
+                📄 عرض الوثيقة المرفقة
+              </a>
+            } @else {
+              <span class="no-attach">لا يوجد مرفق</span>
+            }
+
+            <div class="actions">
+              <button (click)="openEditModal(d)" title="تعديل">✏️</button>
+              <button class="btn-delete" (click)="deleteDecision(d.id)" title="حذف">🗑️</button>
+            </div>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <p>لا توجد قرارات أو بيانات رسمية منشورة حالياً.</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Modal -->
+  @if (showModal()) {
+    <div class="modal-backdrop" (click)="showModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing() ? 'تعديل القرار' : 'إضافة ونشر قرار رسمي جديد' }}</h2>
+          <button class="btn-close" (click)="showModal.set(false)">×</button>
+        </div>
+
+        <form (ngSubmit)="submitDecision()">
+          <div class="form-grid">
+            <label class="full-width">
+              عنوان القرار أو البيان *
+              <input type="text" [(ngModel)]="model.title" name="title" required placeholder="مثال: اعتماد اللائحة التنفيذية لصندوق التكافل" />
+            </label>
+
+            <label>
+              رقم المرجع / الصادر
+              <input type="text" [(ngModel)]="model.referenceNumber" name="referenceNumber" placeholder="مثال: ق/ع/٢٠٢٦/٠١" />
+            </label>
+
+            <label>
+              تاريخ صدور القرار *
+              <input type="date" [(ngModel)]="model.decisionDate" name="decisionDate" required />
+            </label>
+
+            <label class="full-width">
+              نص وتفاصيل القرار ومسوغاته *
+              <textarea [(ngModel)]="model.details" name="details" rows="4" required placeholder="نص القرار الكامل كما اعتمد في جلسة المجلس..."></textarea>
+            </label>
+
+            <div class="attachment-field full-width">
+              <b>وثيقة أو صورة القرار الموقعة (اختياري)</b>
+              <label class="btn-upload">
+                {{ isUploading() ? 'جاري رفع الملف...' : '📎 رفع وثيقة القرار (PDF/صورة)' }}
+                <input type="file" (change)="uploadFile($event)" accept="application/pdf,image/*" [disabled]="isUploading()" />
+              </label>
+              @if (model.attachmentUrl) {
+                <span class="success-txt">✓ تم رفع الوثيقة بنجاح</span>
+              }
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save" [disabled]="isUploading()">
+              {{ isEditing() ? 'حفظ التعديلات' : 'نشر واعتماد القرار' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

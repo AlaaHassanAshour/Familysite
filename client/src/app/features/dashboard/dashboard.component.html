@@ -1,0 +1,128 @@
+<section class="dashboard-page" dir="rtl">
+  <div class="hero">
+    <div>
+      <span class="hero-badge">لوحة الإدارة المركزية</span>
+      <h1>مرحباً بك في مركز إدارة مجلس عائلة عاشور</h1>
+      <p>متابعة متكاملة لشجرة العائلة، اللجان، الأنشطة والفعاليات، وصندوق العائلة المالي.</p>
+    </div>
+    <div class="hero-actions">
+      <a routerLink="/admin/finance" class="btn-hero-primary">💰 متابعة الصندوق المالي ←</a>
+      <a routerLink="/admin/members" class="btn-hero-secondary">🌳 شجرة ودليل العائلة</a>
+    </div>
+  </div>
+
+  @if (dashboard$ | async; as d) {
+    <!-- Main Metrics -->
+    <div class="metrics-grid">
+      <article class="metric-card">
+        <div class="metric-icon green">👥</div>
+        <div class="metric-data">
+          <b>{{ d.members }}</b>
+          <span>إجمالي أفراد العائلة</span>
+          <small>{{ d.councilMembersCount }} عضو مجلس</small>
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-icon blue">🏛️</div>
+        <div class="metric-data">
+          <b>{{ d.branches }}</b>
+          <span>فروع العائلة الكبرى</span>
+          <small>الفروع الستة للعائلة</small>
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-icon gold">▦</div>
+        <div class="metric-data">
+          <b>{{ d.committees }}</b>
+          <span>لجان المجلس النشطة</span>
+          <small>تغطي كافة التخصصات</small>
+        </div>
+      </article>
+
+      <article class="metric-card">
+        <div class="metric-icon purple">✦</div>
+        <div class="metric-data">
+          <b>{{ d.activities }}</b>
+          <span>نشاط وفعالية</span>
+          <small>{{ d.upcomingEvents }} مناسبة قادمة</small>
+        </div>
+      </article>
+    </div>
+
+    <!-- Financial KPI Summary -->
+    <div class="finance-banner">
+      <div class="banner-title">
+        <h3>💰 مؤشرات صندوق ومالية العائلة</h3>
+        <a routerLink="/admin/finance">عرض التفاصيل وسندات الصرف والقبض ←</a>
+      </div>
+      <div class="finance-kpis">
+        <div class="f-item inc">
+          <span>إجمالي المقبوضات (الإيرادات)</span>
+          <b>{{ d.totalIncome | number:'1.2-2' }} <small>شيكل / $</small></b>
+        </div>
+        <div class="f-item exp">
+          <span>إجمالي المصروفات (المدفوعات)</span>
+          <b>{{ d.totalExpense | number:'1.2-2' }} <small>شيكل / $</small></b>
+        </div>
+        <div class="f-item bal">
+          <span>صافي الرصيد المتبقي بالصندوق</span>
+          <b>{{ d.balance | number:'1.2-2' }} <small>شيكل / $</small></b>
+        </div>
+      </div>
+    </div>
+
+    <!-- Two Columns Sections -->
+    <div class="dashboard-columns">
+      <article class="panel">
+        <div class="section-title">
+          <h2>📅 الأنشطة والفعاليات القادمة</h2>
+          <a routerLink="/admin/activities">إدارة الأنشطة</a>
+        </div>
+        <div class="panel-list">
+          @for (activity of d.upcomingActivities; track $any(activity).id) {
+            <div class="list-row">
+              <div class="row-main">
+                <b>{{ $any(activity).title }}</b>
+                <span>🏛️ {{ $any(activity).committee }}</span>
+              </div>
+              <div class="row-meta">
+                <span class="status-tag">{{ $any(activity).status }}</span>
+                <time>{{ $any(activity).scheduledAt | date:'dd/MM/yyyy' }}</time>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-txt">لا توجد أنشطة قادمة مجدولة حالياً.</p>
+          }
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="section-title">
+          <h2>▦ اللجان ومسؤولوها</h2>
+          <a routerLink="/admin/committees">إدارة اللجان</a>
+        </div>
+        <div class="panel-list">
+          @for (committee of d.activeCommittees; track $any(committee).id) {
+            <div class="list-row">
+              <div class="row-main">
+                <b>{{ $any(committee).name }}</b>
+                <span>رئيس اللجنة: <strong>{{ $any(committee).lead }}</strong></span>
+              </div>
+              <div class="row-meta">
+                <small>{{ $any(committee).members }} أعضاء · {{ $any(committee).activities }} أنشطة</small>
+              </div>
+            </div>
+          } @empty {
+            <p class="empty-txt">لا توجد لجان مسجلة حالياً.</p>
+          }
+        </div>
+      </article>
+    </div>
+  } @else {
+    <div class="loading-state">
+      <p>جاري تحميل بيانات وإحصائيات لوحة التحكم...</p>
+    </div>
+  }
+</section>

@@ -1,0 +1,63 @@
+<form class="member-form" (click)="$event.stopPropagation()" (ngSubmit)="submit()">
+  <div class="form-heading">
+    <div>
+      <p class="eyebrow">{{ isEditMode ? 'تعديل بيانات اللجنة' : 'إضافة لجنة جديدة' }}</p>
+      <p>{{ isEditMode ? 'قم بتحديث بيانات اللجنة والأعضاء التابعين لها.' : 'أدخل البيانات الأساسية بدقة لحفظها في سجل العائلة.' }}</p>
+    </div>
+    <button type="button" class="close" (click)="cancelled.emit()">×</button>
+  </div>
+
+  <div class="fields-grid">
+    <label>
+      اسم اللجنة *
+      <input
+        name="committeeName"
+        [(ngModel)]="value.name"
+        required
+      />
+    </label>
+
+    <label>
+      وصف اللجنة
+      <input
+        name="committeeDescription"
+        [(ngModel)]="value.description"
+      />
+    </label>
+
+    <label>
+      رئيس اللجنة *
+      <select
+        class="form-control"
+        [(ngModel)]="value.chairpersonId"
+        name="chairpersonId"
+        required>
+        <option [ngValue]="0" disabled selected>اختر رئيس اللجنة</option>
+        <option *ngFor="let item of membersList" [value]="item.id">
+          {{ item.fullName }}
+        </option>
+      </select>
+    </label>
+
+    <div class="members-selector">
+      <span class="label-title">أعضاء اللجنة</span>
+      <div class="members-checkbox-list">
+        <label *ngFor="let item of membersList" class="checkbox-item">
+          <input
+            type="checkbox"
+            [checked]="isMemberSelected(item.id)"
+            (change)="toggleMember(item.id, $event)"
+          />
+          <span>{{ item.fullName }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <button type="button" class="cancel" (click)="cancelled.emit()">إلغاء</button>
+    <button class="save" type="submit" [disabled]="!value.name || !value.chairpersonId">
+      {{ isEditMode ? 'حفظ التعديل' : 'إضافة اللجنة' }}
+    </button>
+  </div>
+</form>

@@ -1,0 +1,205 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:appsettings.development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\models\\councilentities.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:models\\councilentities.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\controllers\\councilcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:controllers\\councilcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\contracts\\councilcontracts.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:contracts\\councilcontracts.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\controllers\\financecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:controllers\\financecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\services\\securityhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:services\\securityhelper.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|c:\\users\\alaa\\desktop\\ashour\\api\\controllers\\mediaalbumscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{F40315F3-2699-E9E6-5239-0BB149B58ADA}|Ashour.Api.csproj|solutionrelative:controllers\\mediaalbumscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "appsettings.Development.json",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\appsettings.Development.json*",
+              "RelativeToolTip": "appsettings.Development.json*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-26T19:53:52.725Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-08-26T11:04:37.836Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CouncilContracts.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Contracts\\CouncilContracts.cs",
+              "RelativeDocumentMoniker": "Contracts\\CouncilContracts.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Contracts\\CouncilContracts.cs",
+              "RelativeToolTip": "Contracts\\CouncilContracts.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAAAmwEUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T10:19:34.746Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FinanceController.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\FinanceController.cs",
+              "RelativeDocumentMoniker": "Controllers\\FinanceController.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\FinanceController.cs",
+              "RelativeToolTip": "Controllers\\FinanceController.cs",
+              "ViewState": "AgIAAD0AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T10:10:11.792Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Controllers\\AuthController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T10:08:20.299Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "CouncilEntities.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Models\\CouncilEntities.cs",
+              "RelativeDocumentMoniker": "Models\\CouncilEntities.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Models\\CouncilEntities.cs",
+              "RelativeToolTip": "Models\\CouncilEntities.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAIAwwD8AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T09:55:45.594Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "SecurityHelper.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Services\\SecurityHelper.cs",
+              "RelativeDocumentMoniker": "Services\\SecurityHelper.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Services\\SecurityHelper.cs",
+              "RelativeToolTip": "Services\\SecurityHelper.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T09:55:30.801Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "MediaAlbumsController.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\MediaAlbumsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\MediaAlbumsController.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\MediaAlbumsController.cs",
+              "RelativeToolTip": "Controllers\\MediaAlbumsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-26T09:53:46.086Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "CouncilController.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\CouncilController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CouncilController.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Controllers\\CouncilController.cs",
+              "RelativeToolTip": "Controllers\\CouncilController.cs",
+              "ViewState": "AgIAAAEBAAAAAAAAAAAuwBcBAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-25T10:40:28.668Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Microsoft.Common.CurrentVersion.targets",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "RelativeToolTip": "..\\..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\18\\Community\\MSBuild\\Current\\Bin\\amd64\\Microsoft.Common.CurrentVersion.targets",
+              "ViewState": "AgIAAEcVAAAAAAAAAAAkwE8VAAA8AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003801|",
+              "WhenOpened": "2026-08-25T10:30:38.599Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Alaa\\Desktop\\Ashour\\api\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAEYAAAAAAAAAAAAYwAcAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-08-25T10:02:16.396Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

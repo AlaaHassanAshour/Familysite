@@ -1,0 +1,160 @@
+<section class="albums-page" dir="rtl">
+  @if (!selectedAlbum()) {
+    <!-- Album List View -->
+    <div class="page-heading">
+      <div>
+        <span class="eyebrow">إدارة المحتوى والوسائط</span>
+        <h1>ألبومات صور وفيديوهات العائلة</h1>
+        <p class="subtitle">توثيق وحفظ المناسبات والفعاليات بالصور ومقاطع الفيديو مع التخزين المباشر على السيرفر.</p>
+      </div>
+      <button class="btn-primary" (click)="openCreateModal()">
+        ＋ إنشاء ألبوم جديد
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-state">
+        <p>جاري تحميل الألبومات...</p>
+      </div>
+    } @else {
+      <div class="albums-grid">
+        @for (album of albums(); track album.id) {
+          <article class="album-card" (click)="viewAlbumDetails(album.id)">
+            <div class="cover-wrapper">
+              @if (album.coverImageUrl) {
+                <img [src]="api.getMediaUrl(album.coverImageUrl)" [alt]="album.title" />
+              } @else {
+                <div class="no-cover">
+                  <span>🖼️</span>
+                </div>
+              }
+              <div class="media-badges">
+                <span class="badge photo">📷 {{ album.photoCount }} صور</span>
+                <span class="badge video">🎥 {{ album.videoCount }} فيديو</span>
+              </div>
+            </div>
+
+            <div class="album-content">
+              <h3>{{ album.title }}</h3>
+              <p class="desc">{{ album.description || 'لا يوجد وصف' }}</p>
+              
+              <div class="album-footer">
+                <span class="date">📅 {{ (album.eventDate || album.createdAt) | date:'dd/MM/yyyy' }}</span>
+                <button class="btn-delete" (click)="deleteAlbum(album.id, $event)" title="حذف الألبوم">
+                  🗑️
+                </button>
+              </div>
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-state">
+            <p>لا توجد ألبومات مضافة حالياً. اضغط على "إنشاء ألبوم جديد" للبدء.</p>
+          </div>
+        }
+      </div>
+    }
+  } @else {
+    <!-- Album Detail & Multi-Upload View -->
+    <div class="album-detail-view">
+      <div class="detail-header">
+        <button class="btn-back" (click)="backToAlbums()">← العودة لقائمة الألبومات</button>
+        <div class="detail-title-box">
+          <h1>{{ selectedAlbum()?.title }}</h1>
+          <p>{{ selectedAlbum()?.description }}</p>
+          <span class="event-time">📅 {{ (selectedAlbum()?.eventDate || selectedAlbum()?.createdAt) | date:'fullDate' }}</span>
+        </div>
+
+        <div class="upload-actions">
+          <label class="btn-upload" [class.loading]="isUploading()">
+            {{ isUploading() ? 'جاري رفع الملفات على السيرفر...' : '📤 رفع صور وفيديوهات متعددة' }}
+            <input type="file" multiple accept="image/*,video/*" (change)="onMultiUpload($event)" [disabled]="isUploading()" />
+          </label>
+        </div>
+      </div>
+
+      <div class="media-grid">
+        @for (item of selectedAlbum()?.items; track item.id) {
+          <div class="media-card" (click)="previewMedia.set(item)">
+            <div class="media-thumb">
+              @if (item.mediaType === 'Photo') {
+                <img [src]="api.getMediaUrl(item.filePath)" [alt]="item.title || 'صورة'" />
+              } @else {
+                <div class="video-placeholder">
+                  <span class="play-icon">▶</span>
+                  <video [src]="api.getMediaUrl(item.filePath)" preload="metadata"></video>
+                </div>
+              }
+              <span class="type-badge" [class.video]="item.mediaType === 'Video'">
+                {{ item.mediaType === 'Video' ? 'فيديو' : 'صورة' }}
+              </span>
+            </div>
+
+            <div class="media-info">
+              <span class="title">{{ item.title || 'ملف وسائط' }}</span>
+              <button class="btn-delete-item" (click)="$event.stopPropagation(); deleteItem(item.id)" title="حذف الملف">
+                🗑️
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-media">
+            <p>لا توجد وسائط داخل هذا الألبوم بعد.</p>
+            <p>اضغط على زر "رفع صور وفيديوهات متعددة" لاختيار ورفع عدة ملفات في نفس الوقت.</p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Create Album Modal -->
+  @if (showCreateModal()) {
+    <div class="modal-backdrop" (click)="showCreateModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>إنشاء ألبوم عائلي جديد</h2>
+          <button class="btn-close" (click)="showCreateModal.set(false)">×</button>
+        </div>
+
+        <form (ngSubmit)="submitCreateAlbum()">
+          <div class="form-group">
+            <label>عنوان الألبوم *</label>
+            <input type="text" [(ngModel)]="newAlbum.title" name="title" required placeholder="مثال: ألبوم حفل تكريم المتفوقين ٢٠٢٥" />
+          </div>
+
+          <div class="form-group">
+            <label>وصف ونبذة عن الألبوم</label>
+            <textarea [(ngModel)]="newAlbum.description" name="description" rows="3" placeholder="تفاصيل المناسبة والفعالية..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>تاريخ الفعالية / المناسبة</label>
+            <input type="date" [(ngModel)]="newAlbum.eventDate" name="eventDate" />
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showCreateModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save">إنشاء الألبوم</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- Media Preview Modal -->
+  @if (previewMedia(); as media) {
+    <div class="modal-backdrop" (click)="previewMedia.set(null)">
+      <div class="preview-card" (click)="$event.stopPropagation()">
+        <button class="preview-close" (click)="previewMedia.set(null)">×</button>
+        @if (media.mediaType === 'Photo') {
+          <img [src]="api.getMediaUrl(media.filePath)" [alt]="media.title" class="full-media" />
+        } @else {
+          <video [src]="api.getMediaUrl(media.filePath)" controls autoplay class="full-media"></video>
+        }
+        <div class="preview-caption">
+          <b>{{ media.title }}</b>
+          <small>{{ media.uploadedAt | date:'medium' }}</small>
+        </div>
+      </div>
+    </div>
+  }
+</section>

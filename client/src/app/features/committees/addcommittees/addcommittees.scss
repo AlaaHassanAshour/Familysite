@@ -1,0 +1,212 @@
+/* خلفية وتصميم الكارت الرئيسي */
+:host {
+  display: block;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+.member-form {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 28px 32px;
+  direction: rtl;
+  font-family: inherit;
+  box-sizing: border-box;
+  animation: modalFadeIn 0.25s ease-out;
+
+  /* الهيدر والعنوان */
+  .form-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+
+    .eyebrow {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #e0785f;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 0 0 4px 0;
+    }
+
+    p:not(.eyebrow) {
+      font-size: 0.95rem;
+      color: #666;
+      margin: 0;
+    }
+
+    .close {
+      background: #f4f4f5;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 1.4rem;
+      line-height: 1;
+      color: #666;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #e4e4e7;
+        color: #111;
+      }
+    }
+  }
+
+  /* شبكة الحقول */
+  .fields-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-bottom: 28px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #333;
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px 14px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-family: inherit;
+        color: #1e293b;
+        background-color: #f8fafc;
+        outline: none;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        box-sizing: border-box;
+
+        &:focus {
+          border-color: #e0785f;
+          background-color: #fff;
+          box-shadow: 0 0 0 3px rgba(224, 120, 95, 0.15);
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+
+      select {
+        cursor: pointer;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%3c64748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: left 12px center;
+        background-size: 16px;
+        padding-left: 36px;
+      }
+    }
+  }
+.members-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  .label-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .members-checkbox-list {
+    max-height: 140px;
+    overflow-y: auto;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px;
+    background: #f8fafc;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      color: #334155;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 16px;
+        height: 16px;
+        accent-color: #e0785f;
+        cursor: pointer;
+      }
+    }
+  }
+}
+  /* أزرار الإجراءات */
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    border-top: 1px solid #f0f0f0;
+    padding-top: 20px;
+
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      border: none;
+
+      &.cancel {
+        background-color: #f1f5f9;
+        color: #475569;
+
+        &:hover {
+          background-color: #e2e8f0;
+          color: #0f172a;
+        }
+      }
+
+      &.save {
+        background-color: #e0785f;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(224, 120, 95, 0.25);
+
+        &:hover {
+          background-color: #d0674e;
+          box-shadow: 0 6px 16px rgba(224, 120, 95, 0.35);
+        }
+
+        &:active {
+          transform: translateY(1px);
+        }
+      }
+    }
+  }
+}
+
+/* حركة ظهور المودال */
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}

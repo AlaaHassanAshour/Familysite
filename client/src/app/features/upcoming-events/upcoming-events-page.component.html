@@ -1,0 +1,109 @@
+<section class="upcoming-page" dir="rtl">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">أجندة وروزنامة العائلة</span>
+      <h1>المناسبات والأحداث القادمة</h1>
+      <p class="subtitle">جدولة وإدارة الفعاليات والمناسبات العائلية المخطط لها مستقبلاً (أفراح، اجتماعات، تكريم).</p>
+    </div>
+    <button class="btn-primary" (click)="openCreateModal()">
+      ＋ إضافة مناسبة جديدة
+    </button>
+  </div>
+
+  @if (isLoading()) {
+    <div class="loading-state"><p>جاري تحميل المناسبات القادمة...</p></div>
+  } @else {
+    <div class="events-grid">
+      @for (ev of events(); track ev.id) {
+        <article class="event-card" [ngClass]="ev.eventType">
+          <div class="card-date-badge">
+            <span class="day">{{ ev.eventDate | date:'dd' }}</span>
+            <span class="month">{{ ev.eventDate | date:'MMM' }}</span>
+            <span class="year">{{ ev.eventDate | date:'yyyy' }}</span>
+          </div>
+
+          <div class="card-content">
+            <div class="card-top-tags">
+              <span class="type-tag" [ngClass]="ev.eventType">{{ ev.eventType }}</span>
+              <div class="card-actions">
+                <button (click)="openEditModal(ev)" title="تعديل">✏️</button>
+                <button class="btn-delete" (click)="deleteEvent(ev.id)" title="حذف">🗑️</button>
+              </div>
+            </div>
+
+            <h2>{{ ev.title }}</h2>
+            <p class="desc">{{ ev.description || 'لا يوجد وصف إضافي' }}</p>
+
+            <div class="card-meta">
+              @if (ev.location) {
+                <span class="meta-item">📍 {{ ev.location }}</span>
+              }
+              @if (ev.contactPerson) {
+                <span class="meta-item">📞 {{ ev.contactPerson }}</span>
+              }
+            </div>
+          </div>
+        </article>
+      } @empty {
+        <div class="empty-state">
+          <p>لا توجد مناسبات أو فعاليات قادمة مسجلة حالياً.</p>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Add/Edit Modal -->
+  @if (showModal()) {
+    <div class="modal-backdrop" (click)="showModal.set(false)">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing() ? 'تعديل المناسبة' : 'إضافة مناسبة أو حدث قادم' }}</h2>
+          <button class="btn-close" (click)="showModal.set(false)">×</button>
+        </div>
+
+        <form (ngSubmit)="submitEvent()">
+          <div class="form-grid">
+            <label class="full-width">
+              عنوان المناسبة *
+              <input type="text" [(ngModel)]="model.title" name="title" required placeholder="مثال: حفل زفاف الشاب عبد الله عاشور" />
+            </label>
+
+            <label>
+              تاريخ المناسبة *
+              <input type="date" [(ngModel)]="model.eventDate" name="eventDate" required />
+            </label>
+
+            <label>
+              نوع وتصنيف المناسبة *
+              <select [(ngModel)]="model.eventType" name="eventType" required>
+                @for (t of eventTypes; track t) {
+                  <option [value]="t">{{ t }}</option>
+                }
+              </select>
+            </label>
+
+            <label>
+              المكان / القاعة
+              <input type="text" [(ngModel)]="model.location" name="location" placeholder="مثال: صالة الميدان - ديوان الفرع" />
+            </label>
+
+            <label>
+              مسؤول التواصل والاستفسار
+              <input type="text" [(ngModel)]="model.contactPerson" name="contactPerson" placeholder="مثال: فلان (059xxxxxxx)" />
+            </label>
+
+            <label class="full-width">
+              تفاصيل ودعوة المناسبة
+              <textarea [(ngModel)]="model.description" name="description" rows="3" placeholder="نص الدعوة أو تفاصيل التجمع..."></textarea>
+            </label>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-cancel" (click)="showModal.set(false)">إلغاء</button>
+            <button type="submit" class="btn-save">{{ isEditing() ? 'حفظ التعديلات' : 'إضافة المناسبة' }}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</section>

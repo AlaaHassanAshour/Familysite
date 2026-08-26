@@ -1,0 +1,256 @@
+.member-form {
+  background: #ffffff;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  padding: 2rem;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  font-family: 'Cairo', sans-serif;
+  text-align: right;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.form-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+
+  .eyebrow {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1b4d3e;
+    margin: 0 0 0.2rem 0;
+  }
+
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 0.25rem 0;
+  }
+
+  .desc {
+    font-size: 0.88rem;
+    color: #64748b;
+    margin: 0;
+  }
+
+  .close {
+    background: none;
+    border: none;
+    font-size: 1.7rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+
+    &:hover {
+      color: #1e293b;
+    }
+  }
+}
+
+.photo-field {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1px dashed #cbd5e1;
+  margin-bottom: 1.5rem;
+
+  .photo-preview {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid #ffffff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    span {
+      font-size: 1.8rem;
+    }
+  }
+
+  .photo-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    b {
+      font-size: 0.95rem;
+      color: #1e293b;
+    }
+
+    small {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    .upload-button {
+      display: inline-block;
+      width: fit-content;
+      margin-top: 0.3rem;
+      background: #1b4d3e;
+      color: #ffffff;
+      padding: 0.4rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &:hover:not(.loading) {
+        background: #14382c;
+      }
+
+      &.loading {
+        background: #94a3b8;
+        cursor: not-allowed;
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+    }
+  }
+}
+
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+
+  .full-width {
+    grid-column: span 2;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #334155;
+
+    input, select {
+      padding: 0.75rem 0.9rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      font-size: 0.92rem;
+      background: #f8fafc;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: #1b4d3e;
+        background: #ffffff;
+      }
+    }
+  }
+
+  .council-membership {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 1rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .checkbox-label {
+      flex-direction: row;
+      align-items: center;
+      gap: 0.6rem;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #1b4d3e;
+      }
+
+      b {
+        font-size: 0.95rem;
+        color: #166534;
+      }
+    }
+
+    .role-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+
+      span {
+        font-size: 0.88rem;
+        color: #166534;
+        font-weight: 600;
+      }
+
+      select {
+        flex: 1;
+        padding: 0.5rem 0.8rem;
+        border: 1.5px solid #86efac;
+        border-radius: 8px;
+        background: #ffffff;
+      }
+    }
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #f1f5f9;
+
+  button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+  }
+
+  .cancel {
+    background: #f1f5f9;
+    color: #475569;
+
+    &:hover {
+      background: #e2e8f0;
+    }
+  }
+
+  .save {
+    background: linear-gradient(135deg, #1b4d3e, #2e7d32);
+    color: #ffffff;
+    box-shadow: 0 4px 10px rgba(27, 77, 62, 0.2);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(27, 77, 62, 0.3);
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}

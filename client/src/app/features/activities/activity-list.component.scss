@@ -1,0 +1,156 @@
+.activities-container {
+  padding: 24px;
+  direction: rtl;
+
+  .view-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+
+    h1 { font-size: 1.8rem; margin: 4px 0; color: #1e293b; }
+    p { color: #e0785f; font-weight: 700; margin: 0; }
+    span { color: #64748b; font-size: 0.95rem; }
+
+    button {
+      background: #e0785f;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
+  .activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+
+  .activity-card {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        background: #f1f5f9;
+        color: #475569;
+
+        &.قادم { background: #e0f2fe; color: #0369a1; }
+        &.مكتمل { background: #dcfce7; color: #15803d; }
+        &.ملغى { background: #fee2e2; color: #b91c1c; }
+      }
+
+      .actions button {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 4px;
+
+        &.delete:hover { opacity: 0.7; }
+      }
+    }
+
+    h2 { font-size: 1.2rem; margin: 12px 0 6px 0; color: #0f172a; }
+    .desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; margin-bottom: 16px; }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      border-top: 1px solid #f1f5f9;
+      padding-top: 12px;
+    }
+  }
+
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 40px;
+    color: #94a3b8;
+  }
+}
+
+/* Modal styling */
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.activity-form {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+
+  .form-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    h3 { margin: 0; }
+    .close { border: none; background: none; font-size: 1.5rem; cursor: pointer; }
+  }
+
+  .fields-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+
+      input, select, textarea {
+        padding: 10px;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 8px;
+        outline: none;
+        &:focus { border-color: #e0785f; }
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+
+    button {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+
+      &.cancel { background: #f1f5f9; }
+      &.save { background: #e0785f; color: #fff; }
+    }
+  }
+}
