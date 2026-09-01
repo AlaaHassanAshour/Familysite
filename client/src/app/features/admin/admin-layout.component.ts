@@ -11,9 +11,18 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './admin-layout.component.scss'
 })
 export class AdminLayoutComponent {
+  isSidebarOpen: boolean = false;
   readonly auth = inject(AuthService);
 
   onLogout() {
     this.auth.logout();
+  }
+  toggleSidebar(): void {
+    this.isSidebarOpen = !this.isSidebarOpen;
+  }
+
+  // إغلاق القائمة
+  closeSidebar(): void {
+    this.isSidebarOpen = false;
   }
 }

@@ -177,3 +177,20 @@ public class SiteSettings
     public string? Email { get; set; } = "contact@ashour-family.org";
     public string? Address { get; set; } = "ديوان عائلة عاشور العام";
 }
+public class SliderImage
+{
+    public int Id { get; set; }
+    public string Title { get; set; } = string.Empty;
+
+    // الخصائص الجديدة:
+    public string? Badge { get; set; }     // مثل: "أهلاً وسهلاً"، "خبر هام"، "جديد"
+    public string? Subtitle { get; set; }  // العنوان الفرعي أو النص الوصفي
+
+    public string? ImageUrl { get; set; }
+    public string? ButtonText { get; set; }
+    public string? ButtonUrl { get; set; }
+    public int DisplayOrder { get; set; }
+    public bool IsActive { get; set; } = true;
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+}
+

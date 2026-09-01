@@ -17,6 +17,7 @@ public class AshourDbContext(DbContextOptions<AshourDbContext> options) : DbCont
     public DbSet<MediaItem> MediaItems => Set<MediaItem>();
     public DbSet<FinancialRecord> FinancialRecords => Set<FinancialRecord>();
     public DbSet<SiteSettings> SiteSettings => Set<SiteSettings>();
+    public DbSet<SliderImage> SliderImages => Set<SliderImage>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

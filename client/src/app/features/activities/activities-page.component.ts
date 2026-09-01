@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { CouncilApiService, ActivityDto } from '../../council-api.service'; // <-- استورد ActivityDto من هنا
+import { CouncilApiService, ActivityDto } from '../../council-api.service';
 
 export interface CreateActivityRequest {
   id?: number;
@@ -12,16 +12,14 @@ export interface CreateActivityRequest {
   committeeId: number;
 }
 
-
-
 @Component({
   selector: 'app-activities-page',
   standalone: true,
   imports: [CommonModule, FormsModule],
-template: `
+  template: `
     <section class="activities-container">
       <div class="view-heading">
-        <div>
+        <div class="title-area">
           <p class="subtitle">مجلس العائلة</p>
           <h1>الأنشطة والفعاليات</h1>
           <span class="desc-text">متابعة وتوثيق كافة الفعاليات الخاصة باللجان.</span>
@@ -36,8 +34,8 @@ template: `
             <div class="card-header">
               <span class="badge" [ngClass]="item.status">{{ item.status }}</span>
               <div class="actions">
-                <button (click)="openEditModal(item)">✏️</button>
-                <button class="delete" (click)="deleteActivity(item.id)">🗑️</button>
+                <button (click)="openEditModal(item)" title="تعديل">✏️</button>
+                <button class="delete" (click)="deleteActivity(item.id)" title="حذف">🗑️</button>
               </div>
             </div>
 
@@ -66,12 +64,12 @@ template: `
             <div class="fields-grid">
               <label>
                 عنوان النشاط *
-                <input name="title" [(ngModel)]="formValue.title" required />
+                <input name="title" [(ngModel)]="formValue.title" required placeholder="أدخل عنوان النشاط..." />
               </label>
 
               <label>
                 الوصف
-                <textarea name="description" [(ngModel)]="formValue.description" rows="3"></textarea>
+                <textarea name="description" [(ngModel)]="formValue.description" rows="3" placeholder="تفاصيل النشاط..."></textarea>
               </label>
 
               <label>
@@ -81,9 +79,10 @@ template: `
 
               <label>
                 اللجنة التابعة لها *
+                <!-- استبدال [value] بـ [ngValue] للحفاظ على Type كنظام أرقام -->
                 <select name="committeeId" [(ngModel)]="formValue.committeeId" required>
-                  <option [ngValue]="0" disabled selected>اختر اللجنة</option>
-                  <option *ngFor="let c of committees()" [value]="c.id">{{ c.name }}</option>
+                  <option [ngValue]="0" disabled>اختر اللجنة</option>
+                  <option *ngFor="let c of committees()" [ngValue]="c.id">{{ c.name }}</option>
                 </select>
               </label>
 
@@ -97,7 +96,7 @@ template: `
 
             <div class="form-actions">
               <button type="button" class="cancel" (click)="closeModal()">إلغاء</button>
-              <button class="save" type="submit" [disabled]="!formValue.title || !formValue.committeeId || !formValue.scheduledAt">
+              <button class="save" type="submit" [disabled]="!isFormValid()">
                 {{ isEditMode() ? 'حفظ التغييرات' : 'إضافة النشاط' }}
               </button>
             </div>
@@ -110,16 +109,22 @@ template: `
     .activities-container {
       padding: 24px;
       direction: rtl;
+      box-sizing: border-box;
+      width: 100%;
     }
+
     .view-heading {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 16px;
       margin-bottom: 24px;
     }
+
     .view-heading h1 { font-size: 1.8rem; margin: 4px 0; color: #1e293b; }
     .subtitle { color: #e0785f; font-weight: 700; margin: 0; }
     .desc-text { color: #64748b; font-size: 0.95rem; }
+
     .btn-add {
       background: #e0785f;
       color: #fff;
@@ -128,12 +133,17 @@ template: `
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
     }
+    .btn-add:hover { background: #d0674e; }
+
     .activities-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
+
     .activity-card {
       background: #fff;
       border: 1px solid #e2e8f0;
@@ -142,12 +152,15 @@ template: `
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-sizing: border-box;
     }
+
     .card-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
+
     .badge {
       padding: 4px 10px;
       border-radius: 20px;
@@ -158,14 +171,30 @@ template: `
     .badge.قادم { background: #e0f2fe; color: #0369a1; }
     .badge.مكتمل { background: #dcfce7; color: #15803d; }
     .badge.ملغى { background: #fee2e2; color: #b91c1c; }
+
     .actions button {
       background: none;
       border: none;
       cursor: pointer;
       padding: 4px;
+      font-size: 1.1rem;
     }
-    .activity-card h2 { font-size: 1.2rem; margin: 12px 0 6px 0; color: #0f172a; }
-    .activity-card .desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; margin-bottom: 16px; }
+
+    .activity-card h2 {
+      font-size: 1.2rem;
+      margin: 12px 0 6px 0;
+      color: #0f172a;
+      word-break: break-word;
+    }
+
+    .activity-card .desc {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      word-break: break-word;
+    }
+
     .card-footer {
       display: flex;
       justify-content: space-between;
@@ -174,12 +203,15 @@ template: `
       border-top: 1px solid #f1f5f9;
       padding-top: 12px;
     }
+
     .empty {
       grid-column: 1 / -1;
       text-align: center;
       padding: 40px;
       color: #94a3b8;
     }
+
+    /* Modal Styling */
     .modal-backdrop {
       position: fixed;
       top: 0; left: 0;
@@ -190,22 +222,39 @@ template: `
       justify-content: center;
       align-items: center;
       z-index: 1000;
+      padding: 12px;
+      box-sizing: border-box;
     }
+
     .activity-form {
       background: #fff;
       border-radius: 14px;
       padding: 24px;
       width: 100%;
       max-width: 500px;
+      box-sizing: border-box;
+      max-height: calc(100vh - 24px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      animation: modalFadeIn 0.2s ease-out;
     }
+
     .form-heading {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 20px;
     }
-    .form-heading h3 { margin: 0; }
-    .close { border: none; background: none; font-size: 1.5rem; cursor: pointer; }
+    .form-heading h3 { margin: 0; font-size: 1.2rem; color: #0f172a; }
+    .close {
+      border: none;
+      background: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+      line-height: 1;
+    }
+
     .fields-grid {
       display: flex;
       flex-direction: column;
@@ -217,30 +266,80 @@ template: `
       gap: 6px;
       font-weight: 600;
       font-size: 0.9rem;
+      color: #334155;
     }
     .fields-grid input, .fields-grid select, .fields-grid textarea {
+      width: 100%;
       padding: 10px;
       border: 1.5px solid #e2e8f0;
       border-radius: 8px;
       outline: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: border-color 0.2s;
     }
     .fields-grid input:focus, .fields-grid select:focus, .fields-grid textarea:focus {
       border-color: #e0785f;
     }
+    .fields-grid textarea { resize: vertical; min-height: 80px; }
+
     .form-actions {
       display: flex;
       justify-content: flex-end;
       gap: 10px;
-      margin-top: 20px;
+      margin-top: 24px;
     }
     .form-actions button {
       padding: 10px 18px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      font-family: inherit;
     }
-    .form-actions .cancel { background: #f1f5f9; }
+    .form-actions .cancel { background: #f1f5f9; color: #475569; }
     .form-actions .save { background: #e0785f; color: #fff; }
+    .form-actions .save:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 640px) {
+      .activities-container {
+        padding: 12px;
+      }
+      .view-heading {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 16px;
+      }
+      .btn-add {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+      }
+      .activities-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .activity-form {
+        padding: 16px;
+        border-radius: 12px;
+      }
+      .form-actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+      }
+      .form-actions button {
+        width: 100%;
+        padding: 12px;
+      }
+    }
   `]
 })
 export class ActivitiesPageComponent implements OnInit {
@@ -282,26 +381,29 @@ export class ActivitiesPageComponent implements OnInit {
 
   protected openCreateModal(): void {
     this.isEditMode.set(false);
+    const defaultCommittee = this.committees().length > 0 ? this.committees()[0].id : 0;
+
     this.formValue = {
       title: '',
       description: '',
-      scheduledAt: new Date().toISOString().slice(0, 16),
+      scheduledAt: this.toLocalISOString(new Date()),
       status: 'قادم',
-      committeeId: this.committees().length > 0 ? this.committees()[0].id : 0
+      committeeId: defaultCommittee
     };
     this.isModalOpen.set(true);
   }
 
   protected openEditModal(activity: ActivityDto): void {
     this.isEditMode.set(true);
-    const dateFormatted = activity.scheduledAt ? new Date(activity.scheduledAt).toISOString().slice(0, 16) : '';
+    const dateFormatted = activity.scheduledAt ? this.toLocalISOString(new Date(activity.scheduledAt)) : '';
+
     this.formValue = {
       id: activity.id,
       title: activity.title,
       description: activity.description || '',
       scheduledAt: dateFormatted,
       status: activity.status || 'قادم',
-      committeeId: activity.committeeId
+      committeeId: Number(activity.committeeId)
     };
     this.isModalOpen.set(true);
   }
@@ -310,10 +412,16 @@ export class ActivitiesPageComponent implements OnInit {
     this.isModalOpen.set(false);
   }
 
+  protected isFormValid(): boolean {
+    return Boolean(
+      this.formValue.title?.trim() &&
+      Number(this.formValue.committeeId) > 0 &&
+      this.formValue.scheduledAt
+    );
+  }
+
   protected saveActivity(): void {
-    if (!this.formValue.title || !this.formValue.committeeId || !this.formValue.scheduledAt) {
-      return;
-    }
+    if (!this.isFormValid()) return;
 
     const payload: CreateActivityRequest = {
       ...this.formValue,
@@ -347,5 +455,12 @@ export class ActivitiesPageComponent implements OnInit {
         error: (err) => console.error('Error deleting activity:', err)
       });
     }
+  }
+
+  // تحويل التوقيت إلى صيغة YYYY-MM-Thh:mm المتوافقة مع datetime-local حسب التوقيت المحلي للمستخدم
+  private toLocalISOString(date: Date): string {
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    const localISOTime = new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+    return localISOTime;
   }
 }

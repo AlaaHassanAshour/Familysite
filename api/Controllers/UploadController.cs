@@ -1,14 +1,20 @@
+using Ashour.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ashour.Api.Controllers;
 
 [ApiController]
 [Route("api/upload")]
-public class UploadController(IWebHostEnvironment env) : ControllerBase
+public class UploadController : ControllerBase
 {
+    private readonly IUplodeFile _fileServices;
     private static readonly HashSet<string> AllowedImageExtensions = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
     private static readonly HashSet<string> AllowedVideoExtensions = [".mp4", ".mov", ".webm", ".mkv"];
     private static readonly HashSet<string> AllowedDocExtensions = [".pdf", ".doc", ".docx", ".xls", ".xlsx"];
+    public UploadController(IUplodeFile fileServices)
+    {
+        _fileServices = fileServices;
+    }
 
     [HttpPost("single")]
     public async Task<IActionResult> UploadSingle([FromForm] IFormFile? file, [FromQuery] string folder = "general", CancellationToken cancellationToken = default)
@@ -59,6 +65,7 @@ public class UploadController(IWebHostEnvironment env) : ControllerBase
     {
         if (files == null || files.Count == 0)
             return BadRequest(new { message = "لم يتم اختيار أي ملفات للرفع" });
+        //var file = await _fileServices.UploadImageAsync(model.file);
 
         var safeFolder = string.Join("_", folder.Split(Path.GetInvalidFileNameChars())).ToLowerInvariant();
         if (string.IsNullOrWhiteSpace(safeFolder)) safeFolder = "albums";
@@ -93,14 +100,14 @@ public class UploadController(IWebHostEnvironment env) : ControllerBase
             var relativeUrl = $"/uploads/{safeFolder}/{uniqueFileName}";
 
             results.Add(new
-            {
-                url = relativeUrl,
-                fileName = file.FileName,
-                fileSize = file.Length,
-                mediaType = isVideo ? "Video" : "Photo"
-            });
-        }
+        {
+            url = relativeUrl,
+            fileName = file.FileName,
+            fileSize = file.Length,
+            mediaType = isVideo ? "Video" : "Photo"
+        });
+    }
 
         return Ok(results);
-    }
+}
 }

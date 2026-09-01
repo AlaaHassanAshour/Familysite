@@ -1,6 +1,14 @@
 <div class="admin-shell" dir="rtl">
-  <aside class="sidebar">
-    <a class="brand" routerLink="/admin/dashboard">
+  <!-- خلفية ضبابية تظهر فقط في الجوال عند فتح القائمة وتُغلق القائمة عند الضغط عليها -->
+  <div
+    class="sidebar-overlay"
+    [class.open]="isSidebarOpen"
+    (click)="closeSidebar()">
+  </div>
+
+  <!-- القائمة الجانبية (تأخذ كلاس open عند الفتح) -->
+  <aside class="sidebar" [class.open]="isSidebarOpen">
+    <a class="brand" routerLink="/admin/dashboard" (click)="closeSidebar()">
       <span class="brand-symbol">ع</span>
       <div>
         <b>عائلة عاشور</b>
@@ -16,11 +24,15 @@
 
     <p class="nav-label">الرئيسية والمتابعة</p>
     <nav class="side-nav">
-      <a routerLink="/admin/dashboard" routerLinkActive="selected" [routerLinkActiveOptions]="{ exact: true }">
+      <a routerLink="/admin/dashboard" routerLinkActive="selected" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
         <span class="icon">⌂</span>
         <span>نظرة عامة ومؤشرات</span>
       </a>
-      <a routerLink="/admin/finance" routerLinkActive="selected">
+      <a routerLink="/admin/sliders" routerLinkActive="selected" (click)="closeSidebar()">
+        <span class="icon">📜</span>
+        <span>السيلايدر (واجهة البرنامج)</span>
+      </a>
+      <a routerLink="/admin/finance" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">💰</span>
         <span>صندوق ومالية العائلة</span>
       </a>
@@ -28,11 +40,11 @@
 
     <p class="nav-label">شجرة ودليل العائلة</p>
     <nav class="side-nav">
-      <a routerLink="/admin/members" routerLinkActive="selected">
+      <a routerLink="/admin/members" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">🌳</span>
         <span>دليل وشجرة أفراد العائلة</span>
       </a>
-      <a routerLink="/admin/albums" routerLinkActive="selected">
+      <a routerLink="/admin/albums" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">🖼️</span>
         <span>ألبومات ووسائط العائلة</span>
       </a>
@@ -40,19 +52,19 @@
 
     <p class="nav-label">المجلس والأنشطة</p>
     <nav class="side-nav">
-      <a routerLink="/admin/committees" routerLinkActive="selected">
+      <a routerLink="/admin/committees" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">▦</span>
         <span>المجلس واللجان</span>
       </a>
-      <a routerLink="/admin/activities" routerLinkActive="selected">
+      <a routerLink="/admin/activities" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">✦</span>
         <span>الأنشطة والفعاليات</span>
       </a>
-      <a routerLink="/admin/upcoming-events" routerLinkActive="selected">
+      <a routerLink="/admin/upcoming-events" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">📅</span>
         <span>المناسبات والأحداث القادمة</span>
       </a>
-      <a routerLink="/admin/decisions" routerLinkActive="selected">
+      <a routerLink="/admin/decisions" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">📜</span>
         <span>قرارات المجلس</span>
       </a>
@@ -61,12 +73,12 @@
     <p class="nav-label">إدارة النظام</p>
     <nav class="side-nav">
       @if (auth.isAdmin()) {
-        <a routerLink="/admin/users" routerLinkActive="selected">
+        <a routerLink="/admin/users" routerLinkActive="selected" (click)="closeSidebar()">
           <span class="icon">🛡️</span>
           <span>المستخدمون والأذونات</span>
         </a>
       }
-      <a routerLink="/admin/settings" routerLinkActive="selected">
+      <a routerLink="/admin/settings" routerLinkActive="selected" (click)="closeSidebar()">
         <span class="icon">⚙</span>
         <span>إعدادات الموقع</span>
       </a>
@@ -91,6 +103,11 @@
 
   <div class="workspace">
     <header class="topbar">
+      <!-- زر الخطوط الثلاثة لفتح القائمة الجانبية في الشاشات الصغيرة -->
+      <button class="menu-toggle-btn" (click)="toggleSidebar()" aria-label="فتح القائمة">
+        ☰
+      </button>
+
       <div class="breadcrumb">
         <span>مجلس عائلة عاشور</span>
         <b>/</b>

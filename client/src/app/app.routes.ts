@@ -13,6 +13,7 @@ import { UpcomingEventsPageComponent } from './features/upcoming-events/upcoming
 import { DecisionsPageComponent } from './features/decisions/decisions-page.component';
 import { SettingsPageComponent } from './features/settings/settings-page.component';
 import { authGuard } from './guards/auth.guard';
+import { SlidersComponent } from './features/sliders/sliders';
 
 export const routes: Routes = [
   // Public Landing Page
@@ -35,7 +36,8 @@ export const routes: Routes = [
       { path: 'activities', component: ActivitiesPageComponent },
       { path: 'upcoming-events', component: UpcomingEventsPageComponent },
       { path: 'decisions', component: DecisionsPageComponent },
-      { path: 'settings', component: SettingsPageComponent }
+      { path: 'settings', component: SettingsPageComponent },
+      { path: 'sliders', component: SlidersComponent }
     ]
   },
 
@@ -44,6 +46,8 @@ export const routes: Routes = [
   { path: 'members', redirectTo: 'admin/members' },
   { path: 'committees', redirectTo: 'admin/committees' },
   { path: 'activities', redirectTo: 'admin/activities' },
+  { path: 'decisions', redirectTo: 'admin/decisions' },
+  { path: 'sliders', redirectTo: 'admin/sliders' },
   { path: 'decisions', redirectTo: 'admin/decisions' },
   { path: 'settings', redirectTo: 'admin/settings' },
   { path: '**', redirectTo: '' }

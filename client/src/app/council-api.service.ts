@@ -87,7 +87,17 @@ export interface ActivityDto {
   committeeId: number;
   committeeName?: string;
 }
-
+export interface SliderDto{
+id: number;
+  title: string;
+  badge?: string;       // شارة علوية بسيطة
+  subtitle?: string;    // عنوان فرعي
+  imageUrl?: string;
+  buttonText?: string;  // نص الزر الرئيسي
+  buttonUrl?: string;   // رابط الزر الرئيسي
+  displayOrder: number;
+  isActive: boolean;
+}
 export interface UpcomingEventDto {
   id: number;
   title: string;
@@ -123,6 +133,8 @@ export interface MediaAlbumDto {
   videoCount?: number;
   sampleThumbnails?: string[];
   items?: MediaItemDto[];
+  media?: Array<{ url: string; fileUrl?: string }>;
+  photos?: Array<{ url: string; fileUrl?: string }>;
 }
 
 export interface MediaItemDto {
@@ -193,7 +205,8 @@ export interface AppUserDto {
 @Injectable({ providedIn: 'root' })
 export class CouncilApiService {
   private readonly http = inject(HttpClient);
-  public readonly baseUrl = 'http://localhost:5104';
+  // public readonly baseUrl = 'http://localhost:5104';
+  public readonly baseUrl = 'https://alaahashour-001-site1.ltempurl.com';
 
   // Helper to get full asset URL (for uploads)
   getMediaUrl(path?: string): string {
@@ -319,6 +332,26 @@ export class CouncilApiService {
 
   deleteActivity(id: number): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/api/council/activities/${id}`);
+  }
+
+
+  // slider
+  getSliders(limit?: number): Observable<SliderDto[]> {
+    let params = new HttpParams();
+    if (limit) params = params.set('limit', limit.toString());
+    return this.http.get<SliderDto[]>(`${this.baseUrl}/api/Slider/sliders`, { params });
+  }
+
+  addSliders(payload: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/Slider/sliders`, payload);
+  }
+
+  updateslider(id: number, payload: any): Observable<void> {
+    return this.http.put<void>(`${this.baseUrl}/api/Slider/sliders/${id}`, payload);
+  }
+
+  deleteSlider(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.baseUrl}/api/Slider/sliders/${id}`);
   }
 
   // Upcoming Events

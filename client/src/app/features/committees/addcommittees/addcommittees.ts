@@ -1,8 +1,13 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnChanges, SimpleChanges, HostListener, ElementRef } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CouncilApiService } from '../../../council-api.service';
 
+export interface MemberItem {
+  id: number;
+  fullName: string;
+  nationalId?: string; // أضفنا رقم الهوية
+}
 export interface CommitteeFormValue {
   id?: number;
   name: string;
@@ -19,9 +24,12 @@ export interface CommitteeFormValue {
   styleUrl: './addcommittees.scss',
 })
 export class Addcommittees implements OnInit, OnChanges {
-  membersList: { id: number; fullName: string }[] = [];
+membersList: MemberItem[] = [];
+ searchTerm: string = '';
+  isDropdownOpen: boolean = false;
   isEditMode: boolean = false;
-
+  isChairpersonDropdownOpen: boolean = false;
+chairpersonSearchTerm: string = '';
   @Output() submitted = new EventEmitter<CommitteeFormValue>();
   @Output() cancelled = new EventEmitter<void>();
   @Input() committee?: CommitteeFormValue | null = null;
@@ -33,12 +41,20 @@ export class Addcommittees implements OnInit, OnChanges {
     memberIds: []
   };
 
-  constructor(private councilApiService: CouncilApiService) {}
+  constructor(private councilApiService: CouncilApiService, private eRef: ElementRef) {}
 
   ngOnInit(): void {
     this.getMembers();
   }
+// إغلاق قائمة البحث تلقائياً عند النقر خارجها
+  @HostListener('document:click', ['$event'])
+  clickout(event: Event) {
+    if (!this.eRef.nativeElement.contains(event.target)) {
+      this.isDropdownOpen = false;
+          this.isChairpersonDropdownOpen = false;
 
+    }
+  }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['committee'] && this.committee) {
       this.isEditMode = !!this.committee.id;
@@ -53,7 +69,35 @@ export class Addcommittees implements OnInit, OnChanges {
       this.resetForm();
     }
   }
+// إظهار العضو المختار حالياً كرئيس للجنة
+get selectedChairperson(): MemberItem | undefined {
+  return this.membersList.find(m => m.id === Number(this.value.chairpersonId));
+}
 
+// قائمة رؤساء اللجان المفلترة بالبحث
+get filteredChairpersons(): MemberItem[] {
+  if (!this.chairpersonSearchTerm.trim()) return this.membersList;
+  const term = this.chairpersonSearchTerm.toLowerCase().trim();
+  return this.membersList.filter(m =>
+    m.fullName.toLowerCase().includes(term) ||
+    (m.nationalId && m.nationalId.includes(term))
+  );
+}
+
+// تحديد رئيس اللجنة وإغلاق القائمة
+selectChairperson(memberId: number): void {
+  this.value.chairpersonId = memberId;
+  this.isChairpersonDropdownOpen = false;
+}
+
+// تحديث الـ HostListener لإغلاق القائمتين عند الضغط خارج المودال
+// @HostListener('document:click', ['$event'])
+// clickout(event: Event) {
+//   if (!this.eRef.nativeElement.contains(event.target)) {
+//     this.isDropdownOpen = false;
+//     this.isChairpersonDropdownOpen = false;
+//   }
+// }
   private resetForm(): void {
     this.isEditMode = false;
     this.value = {
@@ -86,19 +130,45 @@ export class Addcommittees implements OnInit, OnChanges {
       error: (err) => console.error('Error loading members:', err)
     });
   }
-
-  protected toggleMember(memberId: number, event: Event): void {
-    const checked = (event.target as HTMLInputElement).checked;
-    if (checked) {
-      if (!this.value.memberIds.includes(memberId)) {
-        this.value.memberIds.push(memberId);
-      }
-    } else {
-      this.value.memberIds = this.value.memberIds.filter(id => id !== memberId);
-    }
+// فلترة القائمة بناءً على الاسم أو رقم الهوية
+  get filteredMembers(): MemberItem[] {
+    if (!this.searchTerm.trim()) return this.membersList;
+    const term = this.searchTerm.toLowerCase().trim();
+    return this.membersList.filter(m =>
+      m.fullName.toLowerCase().includes(term) ||
+      (m.nationalId && m.nationalId.includes(term))
+    );
   }
 
+  // إرجاع قائمة الأعضاء المختارين لعرضهم كـ Chips
+  get selectedMembers(): MemberItem[] {
+    return this.membersList.filter(m => this.value.memberIds.includes(m.id));
+  }
+
+protected toggleMember(memberId: number): void {
+  const index = this.value.memberIds.indexOf(memberId);
+  if (index > -1) {
+    this.value.memberIds.splice(index, 1);
+  } else {
+    this.value.memberIds.push(memberId);
+  }
+}
+protected removeMember(memberId: number, event: Event): void {
+    event.stopPropagation();
+    this.value.memberIds = this.value.memberIds.filter(id => id !== memberId);
+  }
   protected isMemberSelected(memberId: number): boolean {
     return this.value.memberIds.includes(memberId);
+  }
+  protected toggleAllFiltered(): void {
+    const filteredIds = this.filteredMembers.map(m => m.id);
+    const allSelected = filteredIds.every(id => this.value.memberIds.includes(id));
+
+    if (allSelected) {
+      this.value.memberIds = this.value.memberIds.filter(id => !filteredIds.includes(id));
+    } else {
+      const newIds = new Set([...this.value.memberIds, ...filteredIds]);
+      this.value.memberIds = Array.from(newIds);
+    }
   }
 }

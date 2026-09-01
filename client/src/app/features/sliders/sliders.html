@@ -1,0 +1,133 @@
+<div class="sliders-container" dir="rtl">
+  <div class="header">
+    <div>
+      <h2>إدارة السلايدر</h2>
+      <p class="desc">التحكم في الصور والعناوين والأزرار المعروضة في الواجهة الرئيسية.</p>
+    </div>
+    <button type="button" class="btn-primary" (click)="openCreateModal()">+ إضافة سلايدر جديد</button>
+  </div>
+
+  <!-- جدول العرض -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>الصورة</th>
+          <th>الشارة (Badge)</th>
+          <th>العنوان الرئيسي</th>
+          <th>الترتيب</th>
+          <th>الحالة</th>
+          <th>الإجراءات</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of sliders(); track item.id) {
+          <tr>
+            <td>
+              <img [src]="item.imageUrl ? api.getMediaUrl(item.imageUrl) : 'assets/placeholder.png'" alt="Slider Image" class="thumb" />
+            </td>
+            <td><span class="badge-tag">{{ item.badge || '-' }}</span></td>
+            <td><b>{{ item.title }}</b></td>
+            <td>{{ item.displayOrder }}</td>
+            <td>
+              <span [class]="item.isActive ? 'status-active' : 'status-inactive'">
+                {{ item.isActive ? 'مفعل' : 'معطل' }}
+              </span>
+            </td>
+            <td>
+              <button type="button" class="btn-edit" (click)="openEditModal(item)">تعديل</button>
+              <button type="button" class="btn-delete" (click)="deleteSlider(item.id)">حذف</button>
+            </td>
+          </tr>
+        } @empty {
+          @if (!isLoading()) {
+            <tr>
+              <td colspan="6" class="no-data">لا يوجد سلايدرز مضافة حالياً</td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- مودال الإضافة والتعديل -->
+  @if (isModalOpen) {
+    <div class="modal-backdrop" (click)="closeModal()">
+      <form class="slider-form" (click)="$event.stopPropagation()" (ngSubmit)="submit()">
+        <div class="form-heading">
+          <div>
+            <p class="eyebrow">إدارة السلايدر</p>
+            <h2>{{ isEditMode ? 'تعديل بيانات السلايدر' : 'إضافة سلايدر جديد' }}</h2>
+          </div>
+          <button type="button" class="close" (click)="closeModal()">×</button>
+        </div>
+
+        <!-- حقل رفع وصورة السلايدر -->
+        <div class="photo-field">
+          <div class="photo-preview">
+            @if (photoPreview) {
+              <img [src]="photoPreview" alt="معاينة السلايدر" />
+            } @else {
+              <span>🖼️</span>
+            }
+          </div>
+          <div class="photo-actions">
+            <b>صورة السلايدر</b>
+            <small>رفع وتخزين الصورة مباشرة على خادم النظام</small>
+            <label class="upload-button" [class.loading]="isUploading()">
+              {{ isUploading() ? 'جاري الرفع على السيرفر...' : '📷 اختيار ورفع صورة' }}
+              <input type="file" accept="image/png,image/jpeg,image/webp" (change)="selectPhoto($event)" [disabled]="isUploading()" />
+            </label>
+          </div>
+        </div>
+
+        <div class="fields-grid">
+          <!-- الشارة والعنوان -->
+          <label>
+            الشارة (Badge)
+            <input name="badge" [(ngModel)]="value.badge" placeholder="مثال: خبر هام / جديد" />
+          </label>
+
+          <label>
+            ترتيب العرض
+            <input name="displayOrder" type="number" [(ngModel)]="value.displayOrder" />
+          </label>
+
+          <label class="full-width">
+            العنوان الرئيسي (Title) *
+            <input name="title" [(ngModel)]="value.title" required placeholder="أدخل العنوان الرئيسي للسلايدر" />
+          </label>
+
+          <label class="full-width">
+            العنوان الفرعي (Subtitle)
+            <input name="subtitle" [(ngModel)]="value.subtitle" placeholder="أدخل نص وصفي قصير" />
+          </label>
+
+          <!-- تفاصيل الزر التفاعلي -->
+          <label>
+            نص الزر (Button Text)
+            <input name="buttonText" [(ngModel)]="value.buttonText" placeholder="مثال: استكشف المزيد" />
+          </label>
+
+          <label>
+            رابط الزر (Button URL)
+            <input name="buttonUrl" [(ngModel)]="value.buttonUrl" placeholder="مثال: #council أو /news" />
+          </label>
+
+          <!-- تفعيل السلايدر -->
+          <label class="checkbox-label full-width">
+            <input type="checkbox" name="isActive" [(ngModel)]="value.isActive" />
+            تفعيل ظهور السلايدر في الصفحة الرئيسية
+          </label>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel" (click)="closeModal()">إلغاء</button>
+          <button class="save" type="submit" [disabled]="!value.title || isUploading()">
+            {{ isEditMode ? 'حفظ التعديلات' : 'إضافة السلايدر' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

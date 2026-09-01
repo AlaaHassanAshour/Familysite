@@ -1,16 +1,38 @@
 .activities-container {
   padding: 24px;
   direction: rtl;
+  box-sizing: border-box;
+  width: 100%;
 
+  /* الهيدر والعنوان */
   .view-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 16px;
     margin-bottom: 24px;
 
-    h1 { font-size: 1.8rem; margin: 4px 0; color: #1e293b; }
-    p { color: #e0785f; font-weight: 700; margin: 0; }
-    span { color: #64748b; font-size: 0.95rem; }
+    .title-area {
+      display: flex;
+      flex-direction: column;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin: 4px 0;
+      color: #1e293b;
+    }
+
+    p {
+      color: #e0785f;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    span {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
 
     button {
       background: #e0785f;
@@ -20,12 +42,19 @@
       border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.2s;
+
+      &:hover {
+        background: #d0674e;
+      }
     }
   }
 
+  /* شبكة البطاقات */
   .activities-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
   }
 
@@ -37,6 +66,7 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    box-sizing: border-box;
 
     .card-header {
       display: flex;
@@ -65,8 +95,20 @@
       }
     }
 
-    h2 { font-size: 1.2rem; margin: 12px 0 6px 0; color: #0f172a; }
-    .desc { font-size: 0.9rem; color: #64748b; line-height: 1.5; margin-bottom: 16px; }
+    h2 {
+      font-size: 1.2rem;
+      margin: 12px 0 6px 0;
+      color: #0f172a;
+      word-break: break-word;
+    }
+
+    .desc {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      word-break: break-word;
+    }
 
     .card-footer {
       display: flex;
@@ -86,7 +128,9 @@
   }
 }
 
-/* Modal styling */
+/* -----------------------------------------
+   تنسيقات المودال (Modal Styling)
+----------------------------------------- */
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0;
@@ -97,6 +141,8 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  padding: 12px;
+  box-sizing: border-box;
 }
 
 .activity-form {
@@ -105,14 +151,37 @@
   padding: 24px;
   width: 100%;
   max-width: 500px;
+  box-sizing: border-box;
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  animation: modalFadeIn 0.2s ease-out;
 
   .form-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    h3 { margin: 0; }
-    .close { border: none; background: none; font-size: 1.5rem; cursor: pointer; }
+
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+
+    .close {
+      border: none;
+      background: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #64748b;
+      padding: 0;
+      line-height: 1;
+
+      &:hover {
+        color: #0f172a;
+      }
+    }
   }
 
   .fields-grid {
@@ -126,13 +195,27 @@
       gap: 6px;
       font-weight: 600;
       font-size: 0.9rem;
+      color: #334155;
 
       input, select, textarea {
+        width: 100%;
         padding: 10px;
         border: 1.5px solid #e2e8f0;
         border-radius: 8px;
         outline: none;
-        &:focus { border-color: #e0785f; }
+        box-sizing: border-box;
+        font-family: inherit;
+        font-size: 0.95rem;
+        transition: border-color 0.2s;
+
+        &:focus {
+          border-color: #e0785f;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 80px;
       }
     }
   }
@@ -141,16 +224,85 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 24px;
 
     button {
       padding: 10px 18px;
       border-radius: 8px;
       border: none;
       cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: opacity 0.2s;
 
-      &.cancel { background: #f1f5f9; }
-      &.save { background: #e0785f; color: #fff; }
+      &.cancel {
+        background: #f1f5f9;
+        color: #475569;
+
+        &:hover { background: #e2e8f0; }
+      }
+
+      &.save {
+        background: #e0785f;
+        color: #fff;
+
+        &:hover { opacity: 0.9; }
+      }
+    }
+  }
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* -----------------------------------------
+   📱 التجاوب مع الجوال والشاشات الصغيرة
+----------------------------------------- */
+@media (max-width: 640px) {
+  .activities-container {
+    padding: 12px;
+
+    .view-heading {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 16px;
+
+      h1 { font-size: 1.4rem; }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        text-align: center;
+      }
+    }
+
+    .activities-grid {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+  }
+
+  .activity-form {
+    padding: 16px;
+    border-radius: 12px;
+
+    .form-actions {
+      flex-direction: column-reverse;
+      gap: 8px;
+
+      button {
+        width: 100%;
+        padding: 12px;
+      }
     }
   }
 }

@@ -44,6 +44,10 @@ public record UpdateCommitteeRequest(string Name, string? Description, int Chair
 // Activities
 public record CreateActivityRequest(string Title, string? Description, DateTime ScheduledAt, string Status, string? Location, string? ImageUrl, int CommitteeId);
 public record UpdateActivityRequest(string Title, string? Description, DateTime ScheduledAt, string Status, string? Location, string? ImageUrl, int CommitteeId);
+//slider
+public record CreateSliderRequest(string Title, string Badge, string Subtitle, string ButtonText, string ButtonUrl, int DisplayOrder, string? ImageUrl, bool isActive);
+public record UpdateSliderRequest(string Title, string Badge, string Subtitle, string ButtonText, string ButtonUrl, int DisplayOrder, string? ImageUrl, bool isActive);
+
 
 // Upcoming Events
 public record CreateUpcomingEventRequest(string Title, string? Description, DateTime EventDate, string? Location, string EventType, string? ContactPerson);

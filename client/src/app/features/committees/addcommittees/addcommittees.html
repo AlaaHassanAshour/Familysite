@@ -10,46 +10,115 @@
   <div class="fields-grid">
     <label>
       اسم اللجنة *
-      <input
-        name="committeeName"
-        [(ngModel)]="value.name"
-        required
-      />
+      <input name="committeeName" [(ngModel)]="value.name" required />
     </label>
 
     <label>
       وصف اللجنة
+      <input name="committeeDescription" [(ngModel)]="value.description" />
+    </label>
+
+<!-- اختيار رئيس اللجنة المتقدم (Single-Select Search Dropdown) -->
+<div class="custom-multiselect">
+  <span class="label-title">رئيس اللجنة *</span>
+
+  <div class="select-box" (click)="isChairpersonDropdownOpen = !isChairpersonDropdownOpen; $event.stopPropagation()">
+    <div class="chips-container">
+      <span *ngIf="!selectedChairperson" class="placeholder">اختر رئيس اللجنة...</span>
+      <span *ngIf="selectedChairperson" class="chip">
+        {{ selectedChairperson.fullName }}
+        <span *ngIf="selectedChairperson.nationalId" class="national-id-badge">({{ selectedChairperson.nationalId }})</span>
+      </span>
+    </div>
+    <span class="arrow" [class.open]="isChairpersonDropdownOpen">▼</span>
+  </div>
+
+  <div class="dropdown-panel" *ngIf="isChairpersonDropdownOpen" (click)="$event.stopPropagation()">
+    <div class="search-box">
       <input
-        name="committeeDescription"
-        [(ngModel)]="value.description"
+        type="text"
+        placeholder="ابحث بالاسم أو رقم الهوية..."
+        [(ngModel)]="chairpersonSearchTerm"
+        name="chairpersonSearch"
       />
-    </label>
+    </div>
 
-    <label>
-      رئيس اللجنة *
-      <select
-        class="form-control"
-        [(ngModel)]="value.chairpersonId"
-        name="chairpersonId"
-        required>
-        <option [ngValue]="0" disabled selected>اختر رئيس اللجنة</option>
-        <option *ngFor="let item of membersList" [value]="item.id">
-          {{ item.fullName }}
-        </option>
-      </select>
-    </label>
+    <div class="options-list">
+      <div
+        *ngFor="let item of filteredChairpersons"
+        class="option-item"
+        [class.selected]="value.chairpersonId === item.id"
+        (click)="selectChairperson(item.id)"
+      >
+        <div class="member-info">
+          <span class="name">{{ item.fullName }}</span>
+          <span class="national-id" *ngIf="item.nationalId">هوية: {{ item.nationalId }}</span>
+        </div>
+      </div>
 
-    <div class="members-selector">
-      <span class="label-title">أعضاء اللجنة</span>
-      <div class="members-checkbox-list">
-        <label *ngFor="let item of membersList" class="checkbox-item">
+      <div *ngIf="filteredChairpersons.length === 0" class="no-data">
+        لا يوجد نتائج تطابق البحث
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- اختيار الأعضاء المتقدم (Custom Multi-Select Dropdown) -->
+    <div class="custom-multiselect">
+      <span class="label-title">أعضاء اللجنة (اختر من القائمة)</span>
+
+      <!-- الصندوق الرئيسي الذي يعرض العناصر المختارة -->
+      <div class="select-box" (click)="isDropdownOpen = !isDropdownOpen">
+        <div class="chips-container">
+          <span *ngIf="selectedMembers.length === 0" class="placeholder">اضغط لاختيار والبحث عن أعضاء...</span>
+          <span *ngFor="let member of selectedMembers" class="chip">
+            {{ member.fullName }}
+            <button type="button" (click)="removeMember(member.id, $event)">×</button>
+          </span>
+        </div>
+        <span class="arrow" [class.open]="isDropdownOpen">▼</span>
+      </div>
+
+      <!-- القائمة المنسدلة للبحث والاختيار -->
+      <div class="dropdown-panel" *ngIf="isDropdownOpen">
+        <div class="search-box">
           <input
-            type="checkbox"
-            [checked]="isMemberSelected(item.id)"
-            (change)="toggleMember(item.id, $event)"
+            type="text"
+            placeholder="ابحث بالاسم أو رقم الهوية..."
+            [(ngModel)]="searchTerm"
+            name="memberSearch"
+            (click)="$event.stopPropagation()"
           />
-          <span>{{ item.fullName }}</span>
-        </label>
+        </div>
+
+        <div class="actions-bar">
+          <button type="button" class="btn-link" (click)="toggleAllFiltered()">
+            تحديد / إلغاء الكل
+          </button>
+          <span class="count-info">تم اختيار ({{ value.memberIds.length }})</span>
+        </div>
+
+  <div class="options-list">
+  <div
+    *ngFor="let item of filteredMembers"
+    class="option-item"
+    [class.selected]="isMemberSelected(item.id)"
+    (click)="toggleMember(item.id)"
+  >
+    <input
+      type="checkbox"
+      [checked]="isMemberSelected(item.id)"
+    />
+    <div class="member-info">
+      <span class="name">{{ item.fullName }}</span>
+      <span class="national-id" *ngIf="item.nationalId">هوية: {{ item.nationalId }}</span>
+    </div>
+  </div>
+
+  <div *ngIf="filteredMembers.length === 0" class="no-data">
+    لا يوجد أعضاء يطابقون البحث
+  </div>
+</div>>
       </div>
     </div>
   </div>

@@ -34,45 +34,78 @@
     </div>
   </header>
 
-  <!-- 1. HERO SLIDER SECTION -->
-  <section id="hero" class="hero-slider">
-    @for (slide of slides; track $index) {
-      <div class="slide-item" [class.active]="currentSlide() === $index" [ngClass]="slide.bgClass">
-        <div class="slide-overlay"></div>
-        <div class="slide-content">
+<!-- 1. HERO SLIDER SECTION -->
+<section id="hero" class="hero-slider">
+  @for (slide of slides(); track slide.id; let idx = $index) {
+   <div class="slide-item" [class.active]="currentSlide() === idx">
+  <img
+    [src]="slide.imageUrl ? api.getMediaUrl(slide.imageUrl) : 'assets/images/default-hero.jpg'"
+    [alt]="slide.title"
+    class="slide-bg-media"
+  />
+<div class="slide-overlay"></div>
+      <div class="slide-content">
+        <!-- Badge -->
+        @if (slide.badge) {
           <span class="slide-badge">{{ slide.badge }}</span>
-          <h1 class="slide-title">{{ slide.title }}</h1>
-          <p class="slide-subtitle">{{ slide.subtitle }}</p>
+        }
 
-          <div class="slide-actions">
-            <button class="btn-cta primary" (click)="scrollTo(slide.ctaTarget)">
-              {{ slide.ctaText }} ←
+        <!-- Title -->
+        <h1 class="slide-title">{{ slide.title }}</h1>
+
+        <!-- Subtitle -->
+        @if (slide.subtitle) {
+          <p class="slide-subtitle">{{ slide.subtitle }}</p>
+        }
+
+        <div class="slide-actions">
+          <!-- Dynamic Button from Server -->
+          @if (slide.buttonText) {
+            <button class="btn-cta primary" (click)="scrollTo(slide.buttonUrl || '#council')">
+              {{ slide.buttonText }} ←
             </button>
-            <button class="btn-cta secondary" (click)="scrollTo('#council')">
-              المجلس واللجان
-            </button>
-          </div>
+          }
+          <button class="btn-cta secondary" (click)="scrollTo('#council')">
+            المجلس واللجان
+          </button>
         </div>
       </div>
-    }
+    </div>
+  } @empty {
+    <!-- شريحة افتراضية عند عدم وجود سلايدرز -->
+    <div class="slide-item active default-slide">
+      <div class="slide-overlay"></div>
+      <div class="slide-content">
+        <span class="slide-badge">أهلاً وسهلاً</span>
+        <h1 class="slide-title">موقع عائلة عاشور الرسمي</h1>
+        <p class="slide-subtitle">منصة للتواصل والترابط بين جميع أبناء العائلة</p>
+        <div class="slide-actions">
+          <button class="btn-cta primary" (click)="scrollTo('#council')">
+            المجلس واللجان ←
+          </button>
+        </div>
+      </div>
+    </div>
+  }
 
-    <!-- Slider Controls -->
+  <!-- أزرار التحكم بالسلايدر -->
+  @if (slides().length > 1) {
     <button class="slider-btn prev" (click)="prevSlide()" aria-label="السابق">‹</button>
     <button class="slider-btn next" (click)="nextSlide()" aria-label="التالي">›</button>
 
     <div class="slider-dots">
-      @for (s of slides; track $index) {
-        <button [class.active]="currentSlide() === $index" (click)="setSlide($index)"></button>
+      @for (s of slides(); track s.id; let idx = $index) {
+        <button [class.active]="currentSlide() === idx" (click)="setSlide(idx)"></button>
       }
     </div>
-  </section>
-
-  <!-- QUICK STATS BAR -->
+  }
+</section>
+<!-- QUICK STATS BAR -->
   <section class="quick-stats-bar">
     <div class="container stats-inner">
       <div class="stat-box">
-        <span class="num">٦</span>
-        <span class="lbl">فروع العائلة الكبرى</span>
+        <span class="num">6</span>
+        <span class="lbl">فروع العائلة </span>
       </div>
       <div class="stat-divider"></div>
       <div class="stat-box">
@@ -92,60 +125,155 @@
     </div>
   </section>
 
-  <!-- 2. COUNCIL & COMMITTEES STRUCTURE -->
-  <section id="council" class="section council-section">
-    <div class="container">
-      <div class="section-heading text-center">
-        <span class="eyebrow">الهيكلية التنظيمية</span>
-        <h2>مجلس العائلة واللجان المتخصصة</h2>
-        <p>يمثل المجلس قيادة الفروع الستة ويرأس أعضاؤه اللجان الخدمية والاجتماعية.</p>
+<!-- 2. COUNCIL & COMMITTEES STRUCTURE -->
+<!-- 2. COUNCIL & COMMITTEES STRUCTURE -->
+<section id="council" class="section council-section">
+  <div class="container">
+    <div class="section-heading text-center">
+      <span class="eyebrow">الهيكلية التنظيمية</span>
+      <h2>مجلس العائلة واللجان المتخصصة</h2>
+      <p>يمثل المجلس قيادة الفروع الستة ويرأس أعضاؤه اللجان الخدمية والاجتماعية.</p>
+    </div>
+
+    <!-- Leadership Grid -->
+    <div class="team-area pt-80 pb-60">
+      <div class="container">
+
+        <div class="section-title text-center mb-4">
+          <h2>أعضاء ومجلس العائلة</h2>
+        </div>
+
+        <!-- 1. القيادة (الرئيس ونائبه جنباً إلى جنب في مركز الصفحة) -->
+     <!-- 1. القيادة (الرئيس ونائبه جنباً إلى جنب في مركز الصفحة) -->
+<!-- 1. القيادة (الرئيس ونائبه جنباً إلى جنب في مركز الصفحة) -->
+<div class="leadership-wrapper">
+
+  <!-- رئيس المجلس -->
+  @if (president(); as pres) {
+    <div class="leader-card featured-card president-card">
+      <div class="badge-title">رئيس المجلس</div>
+      <div class="team-img-box">
+        <img
+          [src]="pres.photoUrl ? api.getMediaUrl(pres.photoUrl) : 'assets/images/avatar-placeholder.jpg'"
+          [alt]="pres.fullName"
+        />
+        <div class="social-overlay">
+          <ul>
+            <li><a href="https://facebook.com" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+            <li><a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+            <li><a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+          </ul>
+        </div>
       </div>
-
-      <!-- Leadership Grid -->
-      <div class="leaders-grid">
-        @for (leader of councilLeaders().slice(0, 4); track leader.id) {
-          <div class="leader-card">
-            <div class="leader-avatar">
-              @if (leader.photoUrl) {
-                <img [src]="api.getMediaUrl(leader.photoUrl)" [alt]="leader.fullName" />
-              } @else {
-                <span>👤</span>
-              }
-            </div>
-            <h3>{{ leader.fullName }}</h3>
-            <span class="leader-role">{{ leader.councilRole }}</span>
-            <small class="branch-tag">{{ leader.branch }}</small>
-          </div>
-        }
-      </div>
-
-      <!-- Committees Grid -->
-      <div class="committees-heading">
-        <h3>اللجان العائلية (اضغط على أي لجنة لاستعراض أعضائها وأنشطتها)</h3>
-      </div>
-
-      <div class="committees-grid">
-        @for (comm of committees(); track comm.id) {
-          <div class="committee-card" (click)="openCommitteeModal(comm.id)">
-            <div class="card-icon">✦</div>
-            <h4>{{ comm.name }}</h4>
-            <p class="desc">{{ comm.description || 'تعزيز العمل العائلي المشترك' }}</p>
-            
-            <div class="comm-meta">
-              <span>رئيس اللجنة: <b>{{ comm.chairperson }}</b></span>
-              <div class="counts">
-                <span>👥 {{ comm.members }} أعضاء</span>
-                <span>✦ {{ comm.activities }} أنشطة</span>
-              </div>
-            </div>
-
-            <span class="view-more-link">استعراض ملف اللجنة والأنشطة ←</span>
-          </div>
-        }
+      <div class="team-content text-center">
+        <h3>{{ pres.fullName }}</h3>
+        <span class="role">{{ pres.councilRole }}</span>
+        <!-- <span class="branch">{{ pres.branch }}</span> -->
       </div>
     </div>
-  </section>
+  }
 
+  <!-- نائب الرئيس -->
+  @if (vicePresident(); as vice) {
+    <div class="leader-card featured-card vice-card">
+      <div class="badge-title">نائب رئيس المجلس</div>
+      <div class="team-img-box">
+        <img
+          [src]="vice.photoUrl ? api.getMediaUrl(vice.photoUrl) : 'assets/images/avatar-placeholder.jpg'"
+          [alt]="vice.fullName"
+        />
+        <div class="social-overlay">
+          <ul>
+            <li><a href="https://facebook.com" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+            <li><a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+            <li><a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="team-content text-center">
+        <h3>{{ vice.fullName }}</h3>
+        <span class="role">{{ vice.councilRole }}</span>
+        <!-- <span class="branch">{{ vice.branch }}</span> -->
+      </div>
+    </div>
+  }
+
+</div>
+        <!-- 2. سلايدر باقي الأعضاء -->
+        @if (otherCouncilMembers().length > 0) {
+          <div class="sub-title text-center mb-3">
+            <h3>أعضاء المجلس</h3>
+          </div>
+
+          <div class="swiper-wrapper-container">
+            <swiper-container
+              slides-per-view="2"
+              space-between="15"
+              navigation="true"
+              pagination="false"
+              [breakpoints]="{
+                '576': { slidesPerView: 2 },
+                '768': { slidesPerView: 3 },
+                '1200': { slidesPerView: 4 }
+              }"
+            >
+              @for (leader of otherCouncilMembers(); track leader.id) {
+                <swiper-slide>
+                  <div class="leader-card member-card">
+                    <div class="team-img-box">
+                      <img
+                        [src]="leader.photoUrl ? api.getMediaUrl(leader.photoUrl) : 'assets/images/avatar-placeholder.jpg'"
+                        [alt]="leader.fullName"
+                      />
+                      <div class="social-overlay">
+                        <ul>
+                          <li><a href="https://facebook.com" target="_blank"><i class="bx bxl-facebook"></i></a></li>
+                          <li><a href="https://twitter.com" target="_blank"><i class="bx bxl-twitter"></i></a></li>
+                          <li><a href="https://instagram.com" target="_blank"><i class="bx bxl-instagram"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="team-content text-center">
+                      <h3>{{ leader.fullName }}</h3>
+                      <span class="role">{{ leader.councilRole }}</span>
+                      <!-- <span class="branch">{{ leader.branch }}</span> -->
+                    </div>
+                  </div>
+                </swiper-slide>
+              }
+            </swiper-container>
+          </div>
+        }
+
+      </div>
+    </div>
+
+    <!-- Committees Grid -->
+    <div class="committees-heading">
+      <h3>اللجان العائلية (اضغط على أي لجنة لاستعراض أعضائها وأنشطتها)</h3>
+    </div>
+
+    <div class="committees-grid">
+      @for (comm of committees(); track comm.id) {
+        <div class="committee-card" (click)="openCommitteeModal(comm.id)">
+          <div class="card-icon">✦</div>
+          <h4>{{ comm.name }}</h4>
+          <p class="desc">{{ comm.description || 'تعزيز العمل العائلي المشترك' }}</p>
+
+          <div class="comm-meta">
+            <span>رئيس اللجنة: <b>{{ comm.chairperson }}</b></span>
+            <div class="counts">
+              <span>👥 {{ comm.members }} أعضاء</span>
+              <span>✦ {{ comm.activities }} أنشطة</span>
+            </div>
+          </div>
+
+          <span class="view-more-link">استعراض ملف اللجنة والأنشطة ←</span>
+        </div>
+      }
+    </div>
+  </div>
+</section>
   <!-- 3. LATEST 4 ACTIVITIES -->
   <section id="activities" class="section activities-section">
     <div class="container">
@@ -191,31 +319,33 @@
         <p>ألبومات توثق المناسبات الرسمية، حفلات التكريم، والبطولات الرياضية.</p>
       </div>
 
-      <div class="albums-grid">
-        @for (album of albums(); track album.id) {
-          <article class="album-card" (click)="openAlbumLightbox(album.id)">
-            <div class="album-cover">
-              @if (album.coverImageUrl) {
-                <img [src]="api.getMediaUrl(album.coverImageUrl)" [alt]="album.title" />
-              } @else {
-                <div class="no-cover"><span>🖼️</span></div>
-              }
-              <div class="album-badges">
-                <span class="b-item">📷 {{ album.photoCount }}</span>
-                <span class="b-item">🎥 {{ album.videoCount }}</span>
-              </div>
-            </div>
-
-            <div class="album-info">
-              <h3>{{ album.title }}</h3>
-              <p>{{ album.description }}</p>
-              <span class="date">📅 {{ (album.eventDate || album.createdAt) | date:'dd/MM/yyyy' }}</span>
-            </div>
-          </article>
-        } @empty {
-          <div class="empty-msg">لا توجد ألبومات معروضة حالياً.</div>
+<div class="albums-grid">
+  @for (album of albums(); track album.id) {
+    <article class="album-card" (click)="openAlbumLightbox(album.id); $event.stopPropagation()">
+      <div class="album-cover">
+        <!-- استخدام coverImageUrl المعتمدة في MediaAlbumDto -->
+        @if (album.coverImageUrl) {
+          <img [src]="api.getMediaUrl(album.coverImageUrl)" [alt]="album.title" />
+        } @else {
+          <div class="no-cover"><span>🖼️</span></div>
         }
+
+        <div class="album-badges">
+          <span class="b-item">📷 {{ album.photoCount || 0 }}</span>
+          <span class="b-item">🎥 {{ album.videoCount || 0 }}</span>
+        </div>
       </div>
+
+      <div class="album-info">
+        <h3>{{ album.title }}</h3>
+        <p>{{ album.description }}</p>
+        <span class="date">📅 {{ (album.eventDate || album.createdAt) | date:'dd/MM/yyyy' }}</span>
+      </div>
+    </article>
+  } @empty {
+    <div class="empty-msg">لا توجد ألبومات معروضة حالياً.</div>
+  }
+</div>
     </div>
   </section>
 
@@ -272,12 +402,12 @@
           [(ngModel)]="searchQuery"
           placeholder="🔍 ابحث بالاسم الرباعي أو رقم الهوية..."
         />
-        <select [(ngModel)]="selectedBranchFilter">
+        <!-- <select [(ngModel)]="selectedBranchFilter">
           <option [ngValue]="null">كل الفروع (الستة)</option>
           @for (b of branches(); track b.id) {
             <option [ngValue]="b.id">{{ b.name }}</option>
           }
-        </select>
+        </select> -->
       </div>
 
       <!-- Member Grid Preview -->
@@ -293,7 +423,7 @@
             </div>
             <div class="m-info">
               <h4>{{ m.fullName }}</h4>
-              <small class="branch">🏛️ {{ m.branch }}</small>
+              <!-- <small class="branch">🏛️ {{ m.branch }}</small> -->
               <small class="father">الأب: <b>{{ m.fatherName }}</b></small>
               <span class="status-pill" [ngClass]="m.status">{{ m.status }}</span>
             </div>
@@ -459,7 +589,7 @@
     <div class="modal-backdrop lightbox-backdrop" (click)="closeAlbumLightbox()">
       <div class="lightbox-card" (click)="$event.stopPropagation()">
         <button class="lightbox-close" (click)="closeAlbumLightbox()">×</button>
-        
+
         <div class="lightbox-header">
           <h2>{{ album.title }}</h2>
           <p>{{ album.description }}</p>
